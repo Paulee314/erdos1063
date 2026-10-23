@@ -508,11 +508,14 @@ theorem W_le_n_of_three_le {k : ℕ} (hk : 3 ≤ k) : W k ≤ n k :=
 
 /-! ### Statements in the exact form proposed for `FormalConjectures/ErdosProblems/1063.lean` -/
 
-/-- Lower bound: for $k \ge 3$,
+/-- Lower bound: for $k \ge 2$,
 $n_k \ge \prod_{p^a \| k} p^{a + \lfloor \log_p (k-1) \rfloor}$. -/
-theorem erdos_1063.variants.lower_bound {k : ℕ} (hk : 3 ≤ k) :
-    ∏ p ∈ k.primeFactors, p ^ (padicValNat p k + Nat.log p (k - 1)) ≤ n k :=
-  W_le_n_of_three_le hk
+theorem erdos_1063.variants.lower_bound {k : ℕ} (hk : 2 ≤ k) :
+    ∏ p ∈ k.primeFactors, p ^ (padicValNat p k + Nat.log p (k - 1)) ≤ n k := by
+  rcases Nat.lt_or_ge k 3 with h3 | h3
+  · obtain rfl : k = 2 := by omega
+    exact W_le_n le_rfl ⟨4, by decide⟩
+  · exact W_le_n_of_three_le h3
 
 /-- Structure of the exceptional index: if every $n - i$ with $i \ne e$ divides
 $\binom{n}{k}$, then $e = n \bmod k$ and
