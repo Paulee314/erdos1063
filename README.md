@@ -24,8 +24,8 @@ problem 1063, with a growth conjecture for n_k* (P. Lee, 2026). Main results:
 * **jbell31**, in the same thread (28 July 2026), with code at
   [Jaybell31/dreamwalk](https://github.com/Jaybell31/dreamwalk/tree/master/erdos1063): n_k for
   60 ≤ k ≤ 75, from a search that assumes rickyc's divisibility result. Our independently computed values
-  agree on all 16. Our Lean file formalizes the "failing index = n mod k" half of that result; the sharper
-  exponent is not formalized here.
+  agree on all 16. Our Lean file formalizes that divisibility result in full (`index_eq_mod`, `D_dvd`), so
+  their minimality claims no longer rest on an unformalized step.
 * **R. Cipollini**: two proof claims on the problem page, an upper bound
   log n_k ≤ (k/log k)(log log k + log log log k + log 2 + o(1)) and a lower bound c(log k)².
   **P. White** (erdosproblemaday.com) gives an upper bound of the same shape. The upper bound is recorded in
@@ -36,7 +36,7 @@ problem 1063, with a growth conjecture for n_k* (P. Lee, 2026). Main results:
 | Path | What |
 |---|---|
 | `paper/` | LaTeX source and PDF. |
-| `lean/Erdos1063Lower.lean` | Lean 4 + Mathlib proof that W'_k divides n − i₀, that i₀ = n mod k, and that W'_k ≤ n_k for all k ≥ 3. It also proves Erdős–Selfridge and Cambie's bound n_k ≤ k·lcm(1,…,k−1). It uses the definition of n_k from Google DeepMind's [formal-conjectures](https://github.com/google-deepmind/formal-conjectures) verbatim. `#print axioms` lists only `propext`, `Classical.choice` and `Quot.sound`. See `lean/README.md` to re-check it (about 7 seconds after setup). |
+| `lean/Erdos1063Lower.lean` | Lean 4 + Mathlib proof that W'_k divides n − i₀, that i₀ = n mod k, that rickyc's sharper D(k,i₀) divides n − i₀, and that W'_k ≤ n_k for all k ≥ 3. It also proves Erdős–Selfridge and Cambie's bound n_k ≤ k·lcm(1,…,k−1). It uses the definition of n_k from Google DeepMind's [formal-conjectures](https://github.com/google-deepmind/formal-conjectures) verbatim. `#print axioms` lists only `propext`, `Classical.choice` and `Quot.sound`. See `lean/README.md` to re-check it (about 7 seconds after setup). |
 | `notes/theorem8_proof.md` | Full proof of log(1/δ(k)) = (C+o(1)) k/log k. |
 | `notes/second_order_proof.md` | Proof of the second-order term c₂·k/log²k, plus the expansion to any order. |
 | `notes/lemmas.md`, `notes/CROSSCHECK_PACKET.md` | Complete statements and proofs, with the record of independent review. |

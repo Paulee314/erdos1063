@@ -13,6 +13,7 @@ The definition of `n` is copied verbatim from
 -/
 
 open Finset
+open scoped Nat
 
 namespace Erdos1063Lower
 
@@ -38,12 +39,13 @@ lemma carry_iff {n k q : ℕ} (hq : 0 < q) (hkn : k ≤ n) :
     rw [h1, Nat.mod_eq_of_lt h'] at h
     omega
 
-/-- **Corollary 5, one prime.** Only the divisibility of the *other* elements is used;
-not even `i0 < k` is needed. -/
-theorem valuation_bound {n k p i0 : ℕ} (hp : p.Prime) (hkn : 2 * k ≤ n) (hpk : p ∣ k)
+/-- Core statement: `v_p(C(n,k)) + v_p(k) ≤ v_p(n - i0)` and
+`v_p(k) + ⌊log_p (k-1)⌋ ≤ v_p(n - i0)`. -/
+theorem valuation_bound_aux {n k p i0 : ℕ} (hp : p.Prime) (hkn : 2 * k ≤ n) (hpk : p ∣ k)
     (hk : 2 ≤ k)
     (hgood : ∀ i < k, i ≠ i0 → (n - i) ∣ n.choose k) :
-    padicValNat p k + Nat.log p (k - 1) ≤ padicValNat p (n - i0) := by
+    padicValNat p (n.choose k) + padicValNat p k ≤ padicValNat p (n - i0) ∧
+      padicValNat p k + Nat.log p (k - 1) ≤ padicValNat p (n - i0) := by
   have : Fact p.Prime := ⟨hp⟩
   have hp2 : 2 ≤ p := hp.two_le
   have hC : n.choose k ≠ 0 := (Nat.choose_pos (by omega)).ne'
@@ -119,6 +121,7 @@ theorem valuation_bound {n k p i0 : ℕ} (hp : p.Prime) (hkn : 2 * k ≤ n) (hpk
     omega
   have hM0 : padicValNat p (n - i0) = M := by rw [hM, hstar]
   rw [hM0]
+  refine ⟨by omega, ?_⟩
   by_cases hcase : L' ≤ V
   · omega
   · push Not at hcase
@@ -163,6 +166,14 @@ theorem valuation_bound {n k p i0 : ℕ} (hp : p.Prime) (hkn : 2 * k ≤ n) (hpk
     simp only [Nat.card_Ioc] at hcard
     rw [← hVc] at hcard
     omega
+
+/-- **Corollary 5, one prime.** Only the divisibility of the *other* elements is used;
+not even `i0 < k` is needed. -/
+theorem valuation_bound {n k p i0 : ℕ} (hp : p.Prime) (hkn : 2 * k ≤ n) (hpk : p ∣ k)
+    (hk : 2 ≤ k)
+    (hgood : ∀ i < k, i ≠ i0 → (n - i) ∣ n.choose k) :
+    padicValNat p k + Nat.log p (k - 1) ≤ padicValNat p (n - i0) :=
+  (valuation_bound_aux hp hkn hpk hk hgood).2
 
 /-- A product of powers of distinct primes divides `m` if each factor does. -/
 lemma prod_prime_pow_dvd {s : Finset ℕ} (hs : ∀ p ∈ s, p.Prime) (f : ℕ → ℕ) {m : ℕ}
@@ -215,6 +226,135 @@ theorem index_eq_mod {n k i0 : ℕ} (hkn : 2 * k ≤ n) (hk : 2 ≤ k) (hi0 : i0
   obtain ⟨t, ht⟩ := k_dvd hkn hk hi0 hgood
   have h' : n = k * t + i0 := by omega
   rw [h', Nat.mul_add_mod, Nat.mod_eq_of_lt hi0]
+
+lemma padicValNat_prod_range {p : ℕ} [Fact p.Prime] (f : ℕ → ℕ) (m : ℕ)
+    (hf : ∀ i < m, f i ≠ 0) :
+    padicValNat p (∏ i ∈ Finset.range m, f i) = ∑ i ∈ Finset.range m, padicValNat p (f i) := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    rw [Finset.prod_range_succ, Finset.sum_range_succ,
+      padicValNat.mul (Finset.prod_ne_zero_iff.mpr fun i hi => hf i (by simp at hi; omega))
+        (hf m (by omega)),
+      ih (fun i hi => hf i (by omega))]
+
+lemma prod_range_succ_eq_factorial (m : ℕ) : ∏ y ∈ Finset.range m, (y + 1) = m ! := by
+  induction m with
+  | zero => simp
+  | succ m ih => rw [Finset.prod_range_succ, ih, Nat.factorial_succ]; ring
+
+/-- **The sharper exponent** (stated and proved by the user rickyc in the erdosproblems.com
+thread, 10 July 2026; used by jbell31's search). If every `n - i` with `i ≠ e` divides
+`C(n,k)` and `p ∣ k`, then
+`v_p(k) + v_p(C(k-1,e)) + ⌊log_p max(e, k-1-e)⌋ ≤ v_p(n - e)`. -/
+theorem sharp_valuation_bound {n k p e : ℕ} (hp : p.Prime) (hkn : 2 * k ≤ n) (hpk : p ∣ k)
+    (hk : 2 ≤ k) (he : e < k)
+    (hgood : ∀ i < k, i ≠ e → (n - i) ∣ n.choose k) :
+    padicValNat p k + padicValNat p ((k - 1).choose e) + Nat.log p (max e (k - 1 - e))
+      ≤ padicValNat p (n - e) := by
+  have := Fact.mk hp
+  have hC : n.choose k ≠ 0 := (Nat.choose_pos (by omega)).ne'
+  obtain ⟨hVM, hLM⟩ := valuation_bound_aux hp hkn hpk hk hgood
+  set V := padicValNat p (n.choose k) with hV
+  set M := padicValNat p (n - e) with hM
+  set a := padicValNat p k with ha
+  set m := k - 1 - e with hm
+  have hle : ∀ i < k, i ≠ e → padicValNat p (n - i) ≤ V := by
+    intro i hi hne
+    exact (padicValNat_dvd_iff_le hC).mp ((pow_padicValNat_dvd).trans (hgood i hi hne))
+  -- each other element has valuation at most that of its distance to e
+  have hlow : ∀ i < e, padicValNat p (n - i) ≤ padicValNat p (e - i) := by
+    intro i hi
+    have hc := hle i (by omega) (by omega)
+    have d1 : p ^ padicValNat p (n - i) ∣ n - i := pow_padicValNat_dvd
+    have d2 : p ^ padicValNat p (n - i) ∣ n - e :=
+      (pow_dvd_pow p (by omega)).trans pow_padicValNat_dvd
+    have d3 := Nat.dvd_sub d1 d2
+    rw [show n - i - (n - e) = e - i by omega] at d3
+    exact (padicValNat_dvd_iff_le (by omega)).mp d3
+  have hhigh : ∀ y < m, padicValNat p (n - (e + 1 + y)) ≤ padicValNat p (y + 1) := by
+    intro y hy
+    have hc := hle (e + 1 + y) (by omega) (by omega)
+    have d1 : p ^ padicValNat p (n - (e + 1 + y)) ∣ n - (e + 1 + y) := pow_padicValNat_dvd
+    have d2 : p ^ padicValNat p (n - (e + 1 + y)) ∣ n - e :=
+      (pow_dvd_pow p (by omega)).trans pow_padicValNat_dvd
+    have d3 := Nat.dvd_sub d2 d1
+    rw [show n - e - (n - (e + 1 + y)) = y + 1 by omega] at d3
+    exact (padicValNat_dvd_iff_le (by omega)).mp d3
+  -- the whole block: sum of valuations = v_p(k!) + V
+  have hprod := padicValNat_prod_range (p := p) (fun i => n - i) k (fun i hi => by omega)
+  rw [← Nat.descFactorial_eq_prod_range, Nat.descFactorial_eq_factorial_mul_choose,
+    padicValNat.mul (Nat.factorial_ne_zero k) hC] at hprod
+  have hsplit : ∑ i ∈ Finset.range k, padicValNat p (n - i) =
+      ∑ i ∈ Finset.range e, padicValNat p (n - i) + M +
+      ∑ y ∈ Finset.range m, padicValNat p (n - (e + 1 + y)) := by
+    have hk' : k = (e + 1) + m := by omega
+    conv_lhs => rw [hk']
+    rw [Finset.sum_range_add, Finset.sum_range_succ]
+  have hefac : padicValNat p (e !) = ∑ i ∈ Finset.range e, padicValNat p (e - i) := by
+    have h := padicValNat_prod_range (p := p) (fun i => e - i) e (fun i hi => by omega)
+    rw [← Nat.descFactorial_eq_prod_range, Nat.descFactorial_self] at h
+    exact h
+  have hmfac : padicValNat p (m !) = ∑ y ∈ Finset.range m, padicValNat p (y + 1) := by
+    have h := padicValNat_prod_range (p := p) (fun y => y + 1) m (fun y hy => by omega)
+    rw [prod_range_succ_eq_factorial] at h
+    exact h
+  have hkfac : padicValNat p (k !) =
+      a + padicValNat p ((k - 1).choose e) + padicValNat p (e !) + padicValNat p (m !) := by
+    rw [← Nat.mul_factorial_pred (by omega : k ≠ 0),
+      ← Nat.choose_mul_factorial_mul_factorial (by omega : e ≤ k - 1),
+      padicValNat.mul (by omega) (Nat.mul_ne_zero (Nat.mul_ne_zero
+        (Nat.choose_pos (by omega)).ne' (Nat.factorial_ne_zero _)) (Nat.factorial_ne_zero _)),
+      padicValNat.mul (Nat.mul_ne_zero (Nat.choose_pos (by omega)).ne' (Nat.factorial_ne_zero _))
+        (Nat.factorial_ne_zero _),
+      padicValNat.mul (Nat.choose_pos (by omega)).ne' (Nat.factorial_ne_zero _)]
+    ring
+  have hsumlow : ∑ i ∈ Finset.range e, padicValNat p (n - i) ≤
+      ∑ i ∈ Finset.range e, padicValNat p (e - i) :=
+    Finset.sum_le_sum fun i hi => hlow i (by simpa using hi)
+  have hsumhigh : ∑ y ∈ Finset.range m, padicValNat p (n - (e + 1 + y)) ≤
+      ∑ y ∈ Finset.range m, padicValNat p (y + 1) :=
+    Finset.sum_le_sum fun y hy => hhigh y (by simpa using hy)
+  have key : V + a + padicValNat p ((k - 1).choose e) ≤ M := by omega
+  -- some other element sits at distance p^u from e, so u ≤ V
+  have hu : Nat.log p (max e m) ≤ V := by
+    set r := max e m with hr
+    have h1 := le_max_left e m
+    have h2 := le_max_right e m
+    have hrk : r ≤ k - 1 := max_le (by omega) (by omega)
+    have hr0 : r ≠ 0 := by omega
+    set u := Nat.log p r with hu'
+    have hpu : p ^ u ≤ r := Nat.pow_log_le_self p hr0
+    have hu1 : 1 ≤ p ^ u := Nat.one_le_pow _ _ hp.pos
+    have hulog : u ≤ Nat.log p (k - 1) := Nat.log_mono_right hrk
+    have hpuM : p ^ u ∣ n - e := (pow_dvd_pow p (by omega)).trans pow_padicValNat_dvd
+    rcases le_total m e with h | h
+    · have hre : r = e := by rw [hr]; exact max_eq_left h
+      have hd : p ^ u ∣ n - (e - p ^ u) := by
+        rw [show n - (e - p ^ u) = (n - e) + p ^ u by omega]
+        exact Nat.dvd_add hpuM dvd_rfl
+      exact ((padicValNat_dvd_iff_le (by omega)).mp hd).trans (hle _ (by omega) (by omega))
+    · have hre : r = m := by rw [hr]; exact max_eq_right h
+      have hd : p ^ u ∣ n - (e + p ^ u) := by
+        rw [show n - (e + p ^ u) = (n - e) - p ^ u by omega]
+        exact Nat.dvd_sub hpuM dvd_rfl
+      exact ((padicValNat_dvd_iff_le (by omega)).mp hd).trans (hle _ (by omega) (by omega))
+  omega
+
+/-- rickyc's divisibility in product form: `D(k,e) = ∏_{p^a ∥ k}
+p^(a + v_p(C(k-1,e)) + ⌊log_p max(e,k-1-e)⌋)` divides `n - e`. Together with
+`index_eq_mod` this is exactly the structural input of jbell31's exhaustive search. -/
+theorem D_dvd {n k e : ℕ} (hkn : 2 * k ≤ n) (hk : 2 ≤ k) (he : e < k)
+    (hgood : ∀ i < k, i ≠ e → (n - i) ∣ n.choose k) :
+    (∏ p ∈ k.primeFactors,
+      p ^ (padicValNat p k + padicValNat p ((k - 1).choose e) + Nat.log p (max e (k - 1 - e))))
+      ∣ n - e := by
+  apply prod_prime_pow_dvd (fun p hp => (Nat.mem_primeFactors.mp hp).1)
+  intro p hp
+  rw [Nat.mem_primeFactors] at hp
+  have := Fact.mk hp.1
+  exact (padicValNat_dvd_iff_le (by omega)).mpr
+    (sharp_valuation_bound hp.1 hkn hp.2.1 hk he hgood)
 
 /-- **Lower bound.** `W'_k ≤ n_k` (whenever an admissible `m` exists, e.g. for `k ≥ 3`
 by Cambie's bound, formalized by DeepMind's LEAP agent). -/
@@ -373,3 +513,4 @@ end Erdos1063Lower
 #print axioms Erdos1063Lower.W_le_n_of_three_le
 #print axioms Erdos1063Lower.cambie_upper_bound
 #print axioms Erdos1063Lower.index_eq_mod
+#print axioms Erdos1063Lower.D_dvd
