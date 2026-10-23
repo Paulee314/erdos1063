@@ -9,6 +9,7 @@ leanprover/lean4:v4.36.0-rc1) of:
 | `W_dvd` | Under the same hypothesis, `W'_k = ∏_{p∣k} p^(v_p(k)+⌊log_p(k-1)⌋)` divides `n - i0`. |
 | `k_dvd`, `index_eq_mod` | Under the same hypothesis, `k ∣ n - i0`; so the failing index is `i0 = n mod k`. |
 | `sharp_valuation_bound`, `D_dvd` | rickyc's sharper exponent (erdosproblems.com thread, 10 July 2026): for `p ∣ k`, `v_p(k) + v_p(C(k-1,e)) + ⌊log_p max(e, k-1-e)⌋ ≤ v_p(n - e)`, and the product `D(k,e)` divides `n - e`. With `index_eq_mod`, this is exactly the structural input of jbell31's exhaustive search for 60 ≤ k ≤ 75, so their minimality claims no longer rest on an unformalized step. |
+| `erdos_1063.variants.lower_bound`, `erdos_1063.variants.exception_dvd` | The two results above, stated verbatim in the form proposed for DeepMind's `FormalConjectures/ErdosProblems/1063.lean` (lower bound for `k ≥ 3`; exceptional index `= n % k` and `D(k,e) ∣ n - e`). |
 | `exists_exception'` | Erdős–Selfridge: for `k ≥ 2`, `n ≥ 2k`, some `n - i` fails to divide `C(n,k)`. |
 | `cambie_mem`, `cambie_upper_bound` | `k·lcm(1..k-1)` is admissible, so `n_k ≤ k·lcm(1..k-1)` for `k ≥ 3`. |
 | `W_le_n_of_three_le` | **Main result:** `W'_k ≤ n_k` for every `k ≥ 3`. |

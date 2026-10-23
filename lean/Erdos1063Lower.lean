@@ -506,6 +506,26 @@ theorem cambie_upper_bound {k : ℕ} (hk : 3 ≤ k) : n k ≤ k * (Finset.Icc 1 
 theorem W_le_n_of_three_le {k : ℕ} (hk : 3 ≤ k) : W k ≤ n k :=
   W_le_n (by omega) ⟨_, cambie_mem hk⟩
 
+/-! ### Statements in the exact form proposed for `FormalConjectures/ErdosProblems/1063.lean` -/
+
+/-- Lower bound: for $k \ge 3$,
+$n_k \ge \prod_{p^a \| k} p^{a + \lfloor \log_p (k-1) \rfloor}$. -/
+theorem erdos_1063.variants.lower_bound {k : ℕ} (hk : 3 ≤ k) :
+    ∏ p ∈ k.primeFactors, p ^ (padicValNat p k + Nat.log p (k - 1)) ≤ n k :=
+  W_le_n_of_three_le hk
+
+/-- Structure of the exceptional index: if every $n - i$ with $i \ne e$ divides
+$\binom{n}{k}$, then $e = n \bmod k$ and
+$\prod_{p^a \| k} p^{a + v_p\binom{k-1}{e} + \lfloor \log_p \max(e, k-1-e) \rfloor}$
+divides $n - e$. -/
+theorem erdos_1063.variants.exception_dvd {n k e : ℕ} (hk : 2 ≤ k) (h : 2 * k ≤ n) (he : e < k)
+    (hgood : ∀ i < k, i ≠ e → (n - i) ∣ n.choose k) :
+    e = n % k ∧
+      ∏ p ∈ k.primeFactors,
+        p ^ (padicValNat p k + padicValNat p ((k - 1).choose e) + Nat.log p (max e (k - 1 - e)))
+        ∣ n - e :=
+  ⟨index_eq_mod h hk he hgood, D_dvd h hk he hgood⟩
+
 end Erdos1063Lower
 
 -- sanity checks: W'_4 = 8, W'_6 = 72, W'_14 = 784 (attained: n_4 - 1, n_6 - 3, n_14 - 9)
@@ -514,3 +534,5 @@ end Erdos1063Lower
 #print axioms Erdos1063Lower.cambie_upper_bound
 #print axioms Erdos1063Lower.index_eq_mod
 #print axioms Erdos1063Lower.D_dvd
+#print axioms Erdos1063Lower.erdos_1063.variants.lower_bound
+#print axioms Erdos1063Lower.erdos_1063.variants.exception_dvd
