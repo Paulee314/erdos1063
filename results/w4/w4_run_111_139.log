@@ -1,0 +1,78 @@
+=== k=113 start 2026-10-23T04:57:02Z
+# k=113 lo=226 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=12355735 maxQ=2.689e+13 density=4.596e-07 block=60927640159824928 blocks=16412913
+113 1154291595269232 i0=25
+# k=113 finished elapsed=4.2s candidates=492616 exact_tests=220641
+=== k=113 end 2026-10-23T04:57:07Z
+=== k=127 start 2026-10-23T04:57:07Z
+# k=127 lo=254 hi=1000000000000000000000000 threads=28 wheels built in 1.4s: residues=395861175 maxQ=9.302e+13 density=4.256e-06 block=6579524884764980 blocks=151986659
+127 9800282003526126 i0=48
+# k=127 finished elapsed=12.5s candidates=147777 exact_tests=57368
+=== k=127 end 2026-10-23T04:57:19Z
+=== k=111 start 2026-10-23T04:57:19Z
+# k=111 lo=222 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=50551 maxQ=7.473e+13 density=1.154e-09 block=24273802986038157312 blocks=41197
+111 624203258168949800 i0=5
+# k=111 finished elapsed=4.0s candidates=5572 exact_tests=2180
+=== k=111 end 2026-10-23T04:57:23Z
+=== k=112 start 2026-10-23T04:57:23Z
+# k=112 lo=224 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=34230 maxQ=5.623e+13 density=1.333e-09 block=20998166024327180288 blocks=47624
+112 235084258952159310 i0=78
+# k=112 finished elapsed=3.3s candidates=2269 exact_tests=694
+=== k=112 end 2026-10-23T04:57:26Z
+=== k=114 start 2026-10-23T04:57:26Z
+# k=114 lo=228 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=5602 maxQ=9.211e+13 density=1.433e-10 block=195376334192725360640 blocks=5119
+114 3058893621505762601 i0=41
+# k=114 finished elapsed=3.4s candidates=189 exact_tests=110
+=== k=114 end 2026-10-23T04:57:30Z
+=== k=115 start 2026-10-23T04:57:30Z
+# k=115 lo=230 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=207825 maxQ=9.107e+13 density=2.956e-09 block=9471965561188608000 blocks=105575
+115 2571800553180159954 i0=79
+# k=115 finished elapsed=3.7s candidates=9531 exact_tests=3294
+=== k=115 end 2026-10-23T04:57:34Z
+=== k=116 start 2026-10-23T04:57:34Z
+# k=116 lo=232 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=168636 maxQ=7.179e+13 density=3.708e-09 block=7551746299502639104 blocks=132420
+116 4581489291604040805 i0=101
+# k=116 finished elapsed=3.9s candidates=1016 exact_tests=281
+=== k=116 end 2026-10-23T04:57:37Z
+=== k=117 start 2026-10-23T04:57:37Z
+# k=117 lo=234 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=210357 maxQ=8.947e+13 density=6.200e-09 block=4516033695419704320 blocks=221434
+117 2625464741944934180 i0=83
+# k=117 finished elapsed=3.4s candidates=803 exact_tests=184
+=== k=117 end 2026-10-23T04:57:41Z
+=== k=118 start 2026-10-23T04:57:41Z
+# k=118 lo=236 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=177270 maxQ=9.517e+13 density=6.263e-09 block=4470361723276829184 blocks=223696
+118 12488331360383631792 i0=48
+# k=118 finished elapsed=10.8s candidates=685 exact_tests=137
+=== k=118 end 2026-10-23T04:57:52Z
+=== k=119 start 2026-10-23T04:57:52Z
+# k=119 lo=238 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=1046651 maxQ=8.479e+13 density=1.331e-08 block=2103965579605466112 blocks=475293
+119 1075680624503443492 i0=65
+# k=119 finished elapsed=4.2s candidates=180 exact_tests=34
+=== k=119 end 2026-10-23T04:57:56Z
+=== k=131 start 2026-10-23T04:57:56Z
+# k=131 lo=262 hi=1000000000000000000000000 threads=28 wheels built in 0.1s: residues=20886263 maxQ=8.148e+13 density=1.823e-06 block=15358672244782182 blocks=65109795
+# k=131 searched [lo, 752574939994327180) elapsed=304s candidates=860979 exact_tests=211163
+131 1225479431226053250 i0=60
+# k=131 finished elapsed=500.9s candidates=1403140 exact_tests=343466
+=== k=131 end 2026-10-23T05:06:17Z
+=== k=137 start 2026-10-23T05:06:17Z
+# k=137 lo=274 hi=1000000000000000000000000 threads=28 wheels built in 0.1s: residues=22424387 maxQ=8.696e+13 density=1.156e-06 block=24225371390085144 blocks=41279037
+# k=137 searched [lo, 1065916341163746610) elapsed=307s candidates=606491 exact_tests=151248
+# k=137 searched [lo, 2083381939547322658) elapsed=608s candidates=1186085 exact_tests=295980
+# k=137 searched [lo, 3100847537930898706) elapsed=912s candidates=1764687 exact_tests=440076
+# k=137 searched [lo, 3827608679633453026) elapsed=1213s candidates=2178737 exact_tests=543077
+137 3995236738822581000 i0=60
+# k=137 finished elapsed=1286.9s candidates=2274778 exact_tests=566880
+=== k=137 end 2026-10-23T05:27:44Z
+=== k=139 start 2026-10-23T05:27:44Z
+# k=139 lo=278 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=5805117 maxQ=5.517e+13 density=2.494e-07 block=112277220990036704 blocks=8906527
+# k=139 searched [lo, 3480593850691138102) elapsed=310s candidates=129846 exact_tests=32804
+# k=139 searched [lo, 6848910480392239222) elapsed=614s candidates=255562 exact_tests=64808
+139 7179634687138597002 i0=111
+# k=139 finished elapsed=643.9s candidates=268047 exact_tests=67974
+=== k=139 end 2026-10-23T05:38:28Z
+=== k=120 start 2026-10-23T05:38:28Z
+# k=120 lo=240 hi=1000000000000000000000000 threads=28 wheels built in 0.0s: residues=16666 maxQ=7.932e+13 density=7.194e-10 block=38923097547530403840 blocks=25692
+120 349159236017505408068 i0=68
+# k=120 finished elapsed=33.5s candidates=78 exact_tests=11
+=== k=120 end 2026-10-23T05:39:01Z
+ALL DONE 2026-10-23T05:39:01Z

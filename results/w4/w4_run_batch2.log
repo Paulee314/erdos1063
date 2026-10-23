@@ -1,0 +1,151 @@
+=== batch2 start 2026-10-23T05:39:17Z QMAX=4e18 CNTMAX=2e7
+settings-check k=100 got=24275936775680073 expected=24275936775680073 OK
+settings-check k=101 got=83339504740900 expected=83339504740900 OK
+settings-check k=102 got=455022751908409400 expected=455022751908409400 OK
+settings-check k=103 got=80855126198850 expected=80855126198850 OK
+settings-check k=104 got=28292410857118753 expected=28292410857118753 OK
+settings-check k=105 got=114184320231814976 expected=114184320231814976 OK
+settings-check k=106 got=505139783269972305 expected=505139783269972305 OK
+settings-check k=107 got=314604394073026 expected=314604394073026 OK
+settings-check k=108 got=42039517780512072 expected=42039517780512072 OK
+settings-check k=109 got=92095914818376 expected=92095914818376 OK
+settings-check k=110 got=4499581121078560101 expected=4499581121078560101 OK
+settings-check k=113 got=1154291595269232 expected=1154291595269232 OK
+settings-check k=127 got=9800282003526126 expected=9800282003526126 OK
+settings-check k=131 got=1225479431226053250 expected=1225479431226053250 OK
+=== k=121 start 2026-10-23T05:41:38Z
+# k=121 lo=242 hi=100000000000000000000000000 threads=28 wheels built in 9.9s: residues=1567973565 maxQ=5.308e+17 density=2.128e-08 block=1315800940542301184 blocks=75999338
+121 36031544587629360 i0=99
+# k=121 finished elapsed=18.5s candidates=144743 exact_tests=42706
+=== k=121 end 2026-10-23T05:41:57Z
+=== k=122 start 2026-10-23T05:41:57Z
+# k=122 lo=244 hi=100000000000000000000000000 threads=28 wheels built in 2.6s: residues=481144670 maxQ=3.761e+18 density=4.722e-10 block=59298272826303881216 blocks=1686390
+122 10690191371065479196 i0=28
+# k=122 finished elapsed=13.0s candidates=59202 exact_tests=23465
+=== k=122 end 2026-10-23T05:42:10Z
+=== k=123 start 2026-10-23T05:42:10Z
+# k=123 lo=246 hi=100000000000000000000000000 threads=28 wheels built in 1.3s: residues=222034805 maxQ=3.393e+18 density=1.053e-10 block=265994401544909979648 blocks=375948
+123 539955158318483546 i0=56
+# k=123 finished elapsed=10.1s candidates=64449 exact_tests=16253
+=== k=123 end 2026-10-23T05:42:20Z
+=== k=124 start 2026-10-23T05:42:20Z
+# k=124 lo=248 hi=100000000000000000000000000 threads=28 wheels built in 0.6s: residues=111646908 maxQ=3.253e+18 density=7.352e-11 block=380865304616500985856 blocks=262561
+124 2319409815118477347 i0=35
+# k=124 finished elapsed=8.9s candidates=56343 exact_tests=11135
+=== k=124 end 2026-10-23T05:42:29Z
+=== k=125 start 2026-10-23T05:42:29Z
+# k=125 lo=250 hi=100000000000000000000000000 threads=28 wheels built in 12.3s: residues=2046331739 maxQ=1.940e+18 density=1.055e-09 block=26551273342159650816 blocks=3766298
+125 165058245202193772 i0=22
+# k=125 finished elapsed=20.7s candidates=189514 exact_tests=32577
+=== k=125 end 2026-10-23T05:42:50Z
+=== k=126 start 2026-10-23T05:42:50Z
+# k=126 lo=252 hi=100000000000000000000000000 threads=28 wheels built in 0.1s: residues=10077388 maxQ=3.937e+18 density=4.381e-12 block=6391375719599492300800 blocks=15647
+126 1612403449350274216000 i0=64
+# k=126 finished elapsed=7.8s candidates=15826 exact_tests=4787
+=== k=126 end 2026-10-23T05:42:58Z
+=== k=128 start 2026-10-23T05:42:58Z
+# k=128 lo=256 hi=100000000000000000000000000 threads=28 wheels built in 12.7s: residues=2104559240 maxQ=1.700e+18 density=1.238e-09 block=22616264649208987648 blocks=4421597
+128 2100509814172237875 i0=51
+# k=128 finished elapsed=21.0s candidates=295451 exact_tests=138371
+=== k=128 end 2026-10-23T05:43:19Z
+=== k=129 start 2026-10-23T05:43:19Z
+# k=129 lo=258 hi=100000000000000000000000000 threads=28 wheels built in 1.9s: residues=343547463 maxQ=3.760e+18 density=1.481e-10 block=189022252059976892416 blocks=529039
+129 366918069874600035072 i0=72
+# k=129 finished elapsed=19.4s candidates=319550 exact_tests=171400
+=== k=129 end 2026-10-23T05:43:38Z
+=== k=130 start 2026-10-23T05:43:38Z
+# k=130 lo=260 hi=100000000000000000000000000 threads=28 wheels built in 0.0s: residues=1872592 maxQ=3.746e+18 density=1.038e-12 block=26978637807472236036096 blocks=3707
+130 2672890339561621920000 i0=0
+# k=130 finished elapsed=9.0s candidates=5305 exact_tests=1871
+=== k=130 end 2026-10-23T05:43:47Z
+=== k=132 start 2026-10-23T05:43:47Z
+# k=132 lo=264 hi=100000000000000000000000000 threads=28 wheels built in 0.0s: residues=428624 maxQ=3.852e+18 density=2.545e-13 block=110001120967893861793792 blocks=910
+132 123904568785495246880 i0=32
+# k=132 finished elapsed=8.9s candidates=1216 exact_tests=541
+=== k=132 end 2026-10-23T05:43:56Z
+=== k=133 start 2026-10-23T05:43:56Z
+# k=133 lo=266 hi=100000000000000000000000000 threads=28 wheels built in 3.8s: residues=624036735 maxQ=3.927e+18 density=2.772e-10 block=101016169337138642944 blocks=989941
+133 883499074332177600000 i0=53
+# k=133 finished elapsed=97.9s candidates=759824 exact_tests=362629
+=== k=133 end 2026-10-23T05:45:34Z
+=== k=134 start 2026-10-23T05:45:34Z
+# k=134 lo=268 hi=100000000000000000000000000 threads=28 wheels built in 0.2s: residues=23802080 maxQ=3.445e+18 density=1.635e-11 block=1712564372814745042944 blocks=58392
+134 4624346743350798696001 i0=65
+# k=134 finished elapsed=29.8s candidates=67652 exact_tests=21685
+=== k=134 end 2026-10-23T05:46:04Z
+=== k=135 start 2026-10-23T05:46:04Z
+# k=135 lo=270 hi=100000000000000000000000000 threads=28 wheels built in 0.1s: residues=15563115 maxQ=1.829e+18 density=1.114e-11 block=2513377291897815957504 blocks=39788
+135 894259177676725050114 i0=114
+# k=135 finished elapsed=9.6s candidates=14938 exact_tests=3316
+=== k=135 end 2026-10-23T05:46:14Z
+=== k=136 start 2026-10-23T05:46:14Z
+# k=136 lo=272 hi=100000000000000000000000000 threads=28 wheels built in 0.9s: residues=170358012 maxQ=3.776e+18 density=5.687e-11 block=492311691123331170304 blocks=203124
+136 266331343761076882500 i0=68
+# k=136 finished elapsed=12.0s candidates=61224 exact_tests=24018
+=== k=136 end 2026-10-23T05:46:26Z
+=== k=138 start 2026-10-23T05:46:26Z
+# k=138 lo=276 hi=100000000000000000000000000 threads=28 wheels built in 0.0s: residues=446516 maxQ=3.674e+18 density=2.696e-13 block=103867959840454373015552 blocks=963
+138 48518376432039910149250 i0=130
+# k=138 finished elapsed=9.6s candidates=1302 exact_tests=563
+=== k=138 end 2026-10-23T05:46:35Z
+=== k=140 start 2026-10-23T05:46:35Z
+# k=140 lo=280 hi=100000000000000000000000000 threads=28 wheels built in 0.0s: residues=343440 maxQ=3.816e+18 density=1.724e-13 block=162407908704428000018432 blocks=616
+140 293365786466311148800071 i0=71
+# k=140 finished elapsed=12.3s candidates=474 exact_tests=191
+=== k=140 end 2026-10-23T05:46:48Z
+=== k=149 start 2026-10-23T05:46:48Z
+# k=149 lo=298 hi=100000000000000000000000000 threads=28 wheels built in 14.5s: residues=2402990911 maxQ=1.263e+18 density=9.922e-09 block=2821980197617883648 blocks=35436110
+149 59804718543532815636 i0=14
+# k=149 finished elapsed=215.9s candidates=588822 exact_tests=119707
+=== k=149 end 2026-10-23T05:50:24Z
+=== k=151 start 2026-10-23T05:50:24Z
+# k=151 lo=302 hi=100000000000000000000000000 threads=28 wheels built in 9.0s: residues=1499798475 maxQ=5.059e+17 density=2.378e-08 block=1177444230995820800 blocks=84929713
+# k=151 searched [lo, 38855659622862086702) elapsed=309s candidates=356909 exact_tests=146769
+# k=151 searched [lo, 77711319245724173102) elapsed=612s candidates=712600 exact_tests=293153
+# k=151 searched [lo, 116566978868586259502) elapsed=914s candidates=1068303 exact_tests=439867
+# k=151 searched [lo, 155422638491448345902) elapsed=1216s candidates=1424004 exact_tests=585665
+# k=151 searched [lo, 194278298114310432302) elapsed=1519s candidates=1779792 exact_tests=731764
+# k=151 searched [lo, 233133957737172518702) elapsed=1822s candidates=2135368 exact_tests=878069
+# k=151 searched [lo, 271989617360034605102) elapsed=2123s candidates=2491389 exact_tests=1023964
+# k=151 searched [lo, 310845276982896691502) elapsed=2424s candidates=2846885 exact_tests=1169460
+151 316542517930011220500 i0=139
+# k=151 finished elapsed=2469.0s candidates=2899155 exact_tests=1190871
+=== k=151 end 2026-10-23T06:31:33Z
+=== k=157 start 2026-10-23T06:31:33Z
+# k=157 lo=314 hi=100000000000000000000000000 threads=28 wheels built in 13.5s: residues=2224725831 maxQ=2.592e+17 density=3.169e-08 block=883426810724044672 blocks=113195569
+# k=157 searched [lo, 27386231132445385146) elapsed=303s candidates=78920 exact_tests=16065
+157 48048676933717376280 i0=75
+# k=157 finished elapsed=526.8s candidates=139556 exact_tests=28511
+=== k=157 end 2026-10-23T06:40:20Z
+=== k=163 start 2026-10-23T06:40:20Z
+# k=163 lo=326 hi=100000000000000000000000000 threads=28 wheels built in 6.6s: residues=1059468165 maxQ=5.626e+17 density=5.204e-08 block=537998628202632576 blocks=185874080
+# k=163 searched [lo, 18291953358889507910) elapsed=308s candidates=33989 exact_tests=11206
+# k=163 searched [lo, 36583906717779015494) elapsed=616s candidates=68715 exact_tests=22457
+# k=163 searched [lo, 54337861448465890502) elapsed=918s candidates=101977 exact_tests=33342
+# k=163 searched [lo, 72091816179152765510) elapsed=1220s candidates=135710 exact_tests=44476
+# k=163 searched [lo, 90383769538042273094) elapsed=1528s candidates=170492 exact_tests=55816
+# k=163 searched [lo, 108137724268729148102) elapsed=1830s candidates=204148 exact_tests=66841
+# k=163 searched [lo, 125891678999416023110) elapsed=2132s candidates=237427 exact_tests=77725
+# k=163 searched [lo, 143645633730102898118) elapsed=2434s candidates=270818 exact_tests=88678
+# k=163 searched [lo, 161399588460789773126) elapsed=2736s candidates=304293 exact_tests=99578
+# k=163 searched [lo, 179153543191476648134) elapsed=3038s candidates=337933 exact_tests=110470
+# k=163 searched [lo, 196907497922163523142) elapsed=3340s candidates=371495 exact_tests=121426
+# k=163 searched [lo, 214661452652850398150) elapsed=3642s candidates=405210 exact_tests=132351
+# k=163 searched [lo, 232415407383537273158) elapsed=3947s candidates=438707 exact_tests=143284
+# k=163 searched [lo, 250169362114224148166) elapsed=4250s candidates=472312 exact_tests=154176
+# k=163 searched [lo, 273841301755139981510) elapsed=4550s candidates=516705 exact_tests=168520
+# k=163 searched [lo, 300741233165271610310) elapsed=4856s candidates=567524 exact_tests=185238
+# k=163 searched [lo, 327641164575403239110) elapsed=5162s candidates=618236 exact_tests=201808
+# k=163 searched [lo, 354541095985534867910) elapsed=5467s candidates=669017 exact_tests=218389
+163 377518312793973563136 i0=68
+# k=163 finished elapsed=5729.2s candidates=712928 exact_tests=232741
+=== k=163 end 2026-10-23T08:15:49Z
+=== k=167 start 2026-10-23T08:15:49Z
+# k=167 lo=334 hi=100000000000000000000000000 threads=28 wheels built in 7.7s: residues=1938442835 maxQ=1.370e+18 density=1.415e-09 block=19789594113676386304 blocks=5053161
+167 729078224618436330880 i0=8
+# k=167 finished elapsed=230.9s candidates=72964 exact_tests=17270
+=== k=167 end 2026-10-23T08:19:40Z
+=== k=173 start 2026-10-23T08:19:40Z
+=== queue stopped 2026-10-23T15:43:25Z at Paul's request; k=173 (pid 35357) left to finish, nothing after it
+=== k=173 stopped 2026-10-23T16:07:40Z at Paul's request, unfinished. Last completed range: # k=173 searched [lo, 22151438727274856546650) elapsed=27934s candidates=2041188 exact_tests=389352
+ALL DONE (k=173 stopped unfinished) 2026-10-23T16:07:40Z
