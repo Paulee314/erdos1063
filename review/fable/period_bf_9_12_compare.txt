@@ -1,0 +1,5 @@
+Full-period brute force (Fable's period_bf.c, Lemma 1 + Legendre only) vs density model (density2.c):
+k=9: count/D = 11/630 = 0.017460317; model exp(-log(1/delta)) = 0.017460310; rel. diff 4.5e-07
+k=10: count/D = 11/7560 = 0.001455026; model exp(-log(1/delta)) = 0.001455027; rel. diff 2.0e-07
+k=11: count/D = 9803/831600 = 0.011788119; model exp(-log(1/delta)) = 0.011788120; rel. diff 9.5e-08
+k=12: count/D = 1/1386 = 0.000721501; model exp(-log(1/delta)) = 0.000721501; rel. diff 1.8e-07

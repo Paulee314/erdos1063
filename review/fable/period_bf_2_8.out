@@ -1,0 +1,7 @@
+k=2 D=4 count=4 count/D=1 formula=1 match=True
+k=3 D=36 count=24 count/D=2/3 formula=2/3 match=True
+k=4 D=144 count=36 count/D=1/4 formula=1/4 match=True
+k=5 D=3600 count=960 count/D=4/15 formula=4/15 match=True
+k=6 D=3600 count=100 count/D=1/36 formula=1/36 match=True
+k=7 D=176400 count=18830 count/D=269/2520 formula=269/2520 match=True
+k=8 D=705600 count=20160 count/D=1/35 formula=1/35 match=True

@@ -1,0 +1,350 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black,pdftitle={The density of admissible n in Erdos-Selfridge problem 1063},pdfauthor={Paul Lee}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\Bad}{Bad}
+\DeclareMathOperator{\rad}{rad}
+\renewcommand{\Pr}{\operatorname{Pr}}
+\newcommand{\Exp}{\mathrm{Exp}}
+\newcommand{\N}{\mathbb N}
+
+\title[The density of admissible $n$ in Erd\H{o}s problem 1063]{The density of admissible $n$ in Erd\H{o}s--Selfridge problem 1063, with a growth conjecture for $n_k$}
+\author{Paul Lee}
+\address{Houston, Texas}
+\date{October 22, 2026}
+
+\begin{document}
+
+\begin{abstract}
+For $k\ge2$ let $n_k\ge2k$ be the least $n$ such that $n-i$ divides $\binom nk$ for all but exactly one $0\le i<k$ (Erd\H{o}s problem 1063, OEIS A389360). We describe, prime by prime, which index fails: $(n-i)\nmid\binom nk$ iff $v_p(n-i)>M_p(n)-d_p(n)$ for some prime $p\le k$, where $M_p$ is the largest $p$-adic valuation in the block $\{n-k+1,\dots,n\}$ and $d_p$ counts the non-carries in the lowest $\lfloor\log_pk\rfloor$ digits when $k$ and $n-k$ are added in base $p$. This gives a two-line proof of the Erd\H{o}s--Selfridge observation and the explicit lower bound $n_k-i_0\ge\prod_{p^a\|k}p^{a+\lfloor\log_p(k-1)\rfloor}$ for the failing index $i_0$ (with equality for $k=4,6,14$), hence $n_k\ge\prod_{p^a\|k}p^{a+\lfloor\log_p(k-1)\rfloor}$; this bound is formally verified in Lean~4. The admissible $n$ form a periodic set whose density $\delta(k)$ is an explicit finite product-sum, and we prove
+\[\log\frac1{\delta(k)}=(C+o(1))\,\frac{k}{\log k},\qquad C=\sum_{j\ge1}\frac1j\log\Big(1+\frac1j\Big)=1.25774688694\ldots\]
+We conjecture that $n_k\delta(k)$ behaves like an exponential random variable, so that $\log n_k=(C+o(1))k/\log k$, and support this with the values $n_k$ for $60\le k\le110$ (extending the OEIS table, which ends at $k=59$, and the values for $k\le75$ posted in the discussion thread), two pre-registered out-of-sample tests, and a correlation of $0.988$ between $\log n_k$ and $\log(1/\delta(k))$ for $31\le k\le110$. The conjecture lies strictly between the bounds $c(\log k)^2$ and $(1+o(1))\,k\log\log k/\log k$ recently claimed by Cipollini, and predicts that the upper one is off by a factor of order $\log\log k$.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Erd\H{o}s and Selfridge \cite{ErSe83} observed that for $n\ge2k$ at least one of the $k$ consecutive integers $n,n-1,\dots,n-k+1$ fails to divide $\binom nk$; a proof was given by Monier \cite{Mo85}. Problem 1063 on \texttt{erdosproblems.com} \cite{EP1063} (also B31 in Guy's collection \cite{Gu04}) asks to estimate
+\[n_k=\min\{\,n\ge2k:\ (n-i)\mid\tbinom nk\text{ for all but exactly one }0\le i<k\,\}.\]
+Monier showed $n_k\le k!$ for $k\ge3$, and Cambie improved this to $n_k\le k\cdot\operatorname{lcm}(2,\dots,k-1)=e^{(1+o(1))k}$. The OEIS entry A389360 \cite{OEIS} lists $n_k$ for $k\le59$. In the problem's discussion thread \cite{EP1063}, the user ``rickyc'' proved $n_k\ge\max\big(2k,\prod_{p^a\|k}p^{a+\lfloor\log_p(k/2)\rfloor}\big)$ (26 June 2026, with GPT-5.5 Thinking), and then the $k-1$ version in the sharper form $p^{\,a+v_p\binom{k-1}{e}+\lfloor\log_p\max(e,k-1-e)\rfloor}\mid n-e$ for the failing index $e$ (10 July 2026, with GPT-5.6 Sol). Our Proposition~\ref{prop:5} is an independent proof of the $k-1$ bound; what is new here is the identification of the equality cases, the characterisation of the bad set behind it, and a formal verification in Lean~4. Two proof claims by Cipollini \cite{Ci26a,Ci26b}, listed on the problem page (which notes that listing is no guarantee of correctness), assert
+\begin{equation}\label{eq:cip}
+c(\log k)^2\ \le\ \log n_k\ \le\ \frac{k}{\log k}\Big(\log\log k+\log\log\log k+\log2+o(1)\Big).
+\end{equation}
+A bound of the same shape, $\log n_k\le Ck\log\log k/\log k$, was announced independently two days earlier by White \cite{Wh26}; an upper bound of exactly the form $n_k\ll\exp\big(\frac{k}{\log k}(\log\log k+\log\log\log k+\log 2)\big)$ is recorded in DeepMind's formal-conjectures repository as formally proved in Lean~4 by the LEAP agent \cite{Ku26,FC}; we have not re-checked that proof. No lower bound for $n_k$ appears among the formalized results there.
+
+Throughout, $k\ge2$ and $n\ge2k$ are integers, the \emph{block} is $B=\{n-k+1,\dots,n\}$, and the index $i\in[0,k)$ refers to the element $n-i$. We call $i$ \emph{bad} if $(n-i)\nmid\binom nk$, and $n$ \emph{admissible} if it has exactly one bad index. For a prime $p$ and an integer $x\ne0$, $v_p(x)$ is the $p$-adic valuation, and
+\[L_p=L_p(k)=\lfloor\log_pk\rfloor,\qquad M_p(n)=\max_{0\le i<k}v_p(n-i),\]
+\[d_p(n)=\#\{1\le e\le L_p:\ n\bmod p^e\ \ge\ k\bmod p^e\}.\]
+Note that $d_p(n)$ counts the levels $e\le L_p$ at which adding $k$ and $n-k$ in base $p$ produces no carry.
+
+Our results are the following.
+
+\begin{theorem}[local description]\label{thm:local}
+For every prime $p\le k$, $v_p\binom nk=M_p(n)-d_p(n)$, and an index $i$ is bad if and only if $v_p(n-i)>M_p(n)-d_p(n)$ for some prime $p\le k$. If $p\mid k$ then $d_p(n)\ge v_p(k)\ge1$, so every index of largest $p$-adic valuation is bad; in particular some index is always bad.
+\end{theorem}
+
+\begin{theorem}[explicit lower bound]\label{thm:lower}
+If $n$ is admissible with bad index $i_0$, then
+\[W'_k:=\prod_{p^a\|k}p^{\,a+\lfloor\log_p(k-1)\rfloor}\quad\text{divides}\quad n-i_0.\]
+Hence $n_k\ge W'_k$. Equality $n_k-i_0=W'_k$ holds for $k=4,6,14$ and for no other $k\le110$.
+\end{theorem}
+
+\begin{theorem}[exact density]\label{thm:density}
+Admissibility of $n$ depends only on $n\bmod p^{2L_p}$ for the primes $p\le k$. The admissible integers therefore form a union of residue classes modulo $D_k=\prod_{p\le k}p^{2L_p}$, of density
+\begin{equation}\label{eq:delta}
+\delta(k)=\sum_{i_0=0}^{k-1}\ \prod_{p\le k}\Pr\big(E_{p,i_0}\big),\qquad E_{p,i_0}=\{n:\ \Bad_p(n)\subseteq\{i_0\}\},
+\end{equation}
+where $\Bad_p(n)=\{i:\ v_p(n-i)>M_p(n)-d_p(n)\}$ and $\Pr(E_{p,i_0})$ is the proportion of residue classes modulo $p^{2L_p}$ in $E_{p,i_0}$. For $p>\sqrt k$,
+\begin{equation}\label{eq:closed}
+\Pr(E_{p,i_0})=\frac{k\bmod p}{p}+\big[\,i_0\bmod p\ \ge\ k\bmod p\,\big]\cdot\begin{cases}1/p&\text{if }\lfloor k/p\rfloor=1,\\ 1/p^2&\text{if }\lfloor k/p\rfloor\ge2.\end{cases}
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[size of the density]\label{thm:asymp}
+Let $S(k)=\sum_{\sqrt k<p\le k,\ p\nmid k}\log\dfrac{p}{k\bmod p}$. Then
+\[\log\frac1{\delta(k)}=S(k)+O(\sqrt k)\qquad\text{and}\qquad S(k)=(C+o(1))\,\frac{k}{\log k},\]
+where
+\[C=\int_1^\infty\frac{-\log\{x\}}{x^2}\,dx=\sum_{j\ge1}\frac1j\log\Big(1+\frac1j\Big)=\sum_{m\ge1}\frac{(-1)^{m+1}\zeta(m+1)}{m}=1.25774688694436963\ldots\]
+Consequently $\log(1/\delta(k))=(C+o(1))\,k/\log k$.
+\end{theorem}
+
+The density is a statement about the set of admissible $n$, not about its least element. The following is a conjecture.
+
+\begin{conjecture}\label{conj}
+$n_k\,\delta(k)$ is approximately an $\Exp(1)$ random variable, so that typically $\log n_k=\log(1/\delta(k))+O(1)$. Under this heuristic, and only under it,
+\[\log n_k=(C+o(1))\,\frac{k}{\log k}.\]
+\end{conjecture}
+
+Section~\ref{sec:evidence} reports the evidence: the values $n_k$ for $60\le k\le110$ (Table~\ref{tab:values}), two pre-registered out-of-sample tests in which $47$ of $51$ values fell inside the central $90\%$ interval of $\Exp(1)/\delta(k)$ ($46$ expected), and the statistics of $\log n_k-\log(1/\delta(k))$. Section~\ref{sec:cip} explains why the construction behind the upper bound in \eqref{eq:cip} loses a factor of order $\log\log k$ relative to the conjecture.
+
+\subsection*{Provenance}
+The analysis, the search code and the first draft of this paper were produced with Claude (Anthropic) at the author's direction; the author has read and checked the write-up. The mathematics was independently refereed by further AI reviewers, including Claude Fable 5.1, Gemini 4 Argon and a Meta AI model, using independently written code; every value in Table~\ref{tab:values} was verified by exact integer arithmetic, and minimality was confirmed by two independently written exhaustive searches. Code, data and the pre-registered prediction files are available at \cite{code}.
+
+\section{The bad set, prime by prime}\label{sec:local}
+
+\begin{lemma}\label{lem:1}
+For $0\le i<k$: $(n-i)\mid\binom nk$ iff $v_p(n-i)\le v_p\binom nk$ for every prime $p\le k$.
+\end{lemma}
+\begin{proof}
+With $P=\prod_{j<k}(n-j)=k!\binom nk$ we have $(n-i)\mid\binom nk\iff k!\mid P/(n-i)$. For $p>k$, $v_p(k!)=0$, so there is no condition. For $p\le k$ the condition $v_p(P)-v_p(n-i)\ge v_p(k!)$ reads $v_p(n-i)\le v_p(P)-v_p(k!)=v_p\binom nk$.
+\end{proof}
+
+So the set of bad indices is $\bigcup_{p\le k}\Bad_p(n)$ with $\Bad_p(n)=\{i: v_p(n-i)>v_p\binom nk\}$.
+
+\begin{lemma}\label{lem:2}
+For $q=p^e$, the block contains $\lfloor k/q\rfloor+\delta_e$ multiples of $q$, where $\delta_e=\delta_e(n)=[\,n\bmod q<k\bmod q\,]$. Hence $v_p\binom nk=\sum_{e\ge1}\delta_e$.
+\end{lemma}
+\begin{proof}
+Write $n=aq+r$ and $k=bq+s$ with $0\le r,s<q$. The number of multiples of $q$ in the block is $\lfloor n/q\rfloor-\lfloor(n-k)/q\rfloor$, which equals $b$ if $r\ge s$ and $b+1$ if $r<s$. Summing over $e$ and using Legendre's formula, $v_p(P)=\sum_e(\lfloor k/p^e\rfloor+\delta_e)=v_p(k!)+\sum_e\delta_e$.
+\end{proof}
+
+Thus $d_p(n)=\#\{1\le e\le L_p:\ \delta_e(n)=0\}$.
+
+\begin{lemma}\label{lem:3}
+$v_p\binom nk=M_p(n)-d_p(n)$. Consequently:
+\begin{enumerate}
+\item $\Bad_p(n)=\varnothing$ iff $d_p(n)=0$;
+\item if $d_p(n)\ge1$, every index of maximal $p$-adic valuation is bad, and $|\Bad_p(n)|=1$ iff the maximum is attained at a single index $i^*$ and every other index has valuation $\le M_p-d_p$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+Write $L=L_p$. The block has $k\ge p^L$ elements, so it contains a multiple of $p^L$ and $M_p\ge L$. For $e>L$ we have $p^e>k$, so $\delta_e=[\text{the block contains a multiple of }p^e]=[M_p\ge e]$. Hence $\sum_e\delta_e=(L-d_p)+(M_p-L)=M_p-d_p$. Parts (1) and (2) follow from $\Bad_p(n)=\{i: v_p(n-i)>M_p-d_p\}$.
+\end{proof}
+
+\begin{corollary}[Erd\H{o}s--Selfridge]\label{cor:4}
+If $p\mid k$ then $d_p(n)\ge v_p(k)\ge1$ for every $n$, because $k\bmod p^e=0$ for $e\le v_p(k)$ (and $v_p(k)\le L_p$). So $\Bad_p(n)\ne\varnothing$, and for every $n\ge k$ some $n-i$ with $0\le i<k$ fails to divide $\binom nk$.\qed
+\end{corollary}
+
+This proves Theorem~\ref{thm:local}.
+
+\section{The explicit lower bound}\label{sec:lower}
+
+\begin{proposition}\label{prop:5}
+Let $n$ be admissible with bad index $i_0$, and let $p^a\|k$. Then $n-i_0$ is the unique element of the block with maximal $p$-adic valuation, and
+\[v_p(n-i_0)\ \ge\ a+\lfloor\log_p(k-1)\rfloor\ =\ a+L_p-[\,k=p^{L_p}\,].\]
+\end{proposition}
+\begin{proof}
+Write $L=L_p$. By Corollary~\ref{cor:4}, $\Bad_p(n)\ne\varnothing$, so $\Bad_p(n)=\{i_0\}$, and by Lemma~\ref{lem:3}(2) $i_0$ is the unique index of maximal valuation and every other index has valuation at most $M_p-d_p$.
+
+Let $e_1$ be the largest $e$ with $0\le e\le L$ such that the block contains at least two multiples of $p^e$ ($e=0$ always qualifies); one of them is not $n-i_0$, so the second-largest valuation in the block is at least $e_1$, whence $M_p-d_p\ge e_1$. For every $e\in(e_1,L]$ the block contains exactly one multiple of $p^e$; since $\lfloor k/p^e\rfloor\ge1$, Lemma~\ref{lem:2} forces $\lfloor k/p^e\rfloor=1$ and $\delta_e=0$.
+
+Suppose $k\ne p^L$. Since $p^a\mid k$, the block contains exactly $k/p^a\ge2$ multiples of $p^a$, so $e_1\ge a$. The levels $e\le a$ (where $k\bmod p^e=0$, so $\delta_e=0$) and the levels $e\in(e_1,L]$ are disjoint sets of non-carries, so $d_p\ge a+(L-e_1)$, and $M_p\ge e_1+d_p\ge a+L$.
+
+If $k=p^L$, then $a=L$, $d_p=L$, and the block contains $p\ge2$ multiples of $p^{L-1}$, so the second-largest valuation is at least $L-1$ and $M_p\ge(L-1)+L=2L-1=a+\lfloor\log_p(k-1)\rfloor$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:lower}]
+By Proposition~\ref{prop:5}, $p^{a+\lfloor\log_p(k-1)\rfloor}\mid n-i_0$ for every $p^a\|k$, so $W'_k\mid n-i_0$ and $n_k\ge n_k-i_0\ge W'_k$. The equality cases were checked against Table~\ref{tab:values} and the OEIS values: $n_4-1=8$, $n_6-3=72$, $n_{14}-9=784$, and $n_k-i_0>W'_k$ for every other $k\le110$.
+\end{proof}
+
+\noindent\emph{Formal verification.} Proposition~\ref{prop:5} (in the slightly stronger form that uses only the divisibility of the elements $n-i$, $i\ne i_0$), the divisibility $W'_k\mid n-i_0$, and the unconditional bound $W'_k\le n_k$ for $k\ge3$ have been formally verified in Lean~4 with Mathlib, using the definition of $n_k$ from \cite{FC} verbatim. The same file proves that the failing index is $n\bmod k$ (the first half of rickyc's divisibility result, on which the search of jbell31 relies), and Cambie's bound $n_k\le k\operatorname{lcm}(1,\dots,k-1)$ independently of \cite{Ku26}; it is part of \cite{code}. The case $k=2$ is immediate ($W'_2=2<4=n_2$).
+
+\begin{remark}
+(i) Since $\lfloor\log_p(k-1)\rfloor\ge\lfloor\log_p(k/2)\rfloor$, this improves the $k/2$ bound from the discussion thread (as does rickyc's $k-1$ version there), with strict improvement when $p^{L_p}>k/2$ and $k\ne p^{L_p}$: for $k=6,14,18,54$, $W'_k=72,784,2592,46656$ against $36,392,1296,23328$.
+(ii) For prime $k$ the bound is only $n_k\ge k$. It is not comparable with the claimed $c(\log k)^2$ of \eqref{eq:cip} without an explicit $c$; the data force $c\le0.740$ (from $k=19$), and with that value $\log W'_k$ exceeds $c(\log k)^2$ for $28$ of the $80$ composite $k\le110$, those with several small prime factors. Its merit is that it is explicit and attained, not that it is large.
+(iii) Along primorials $k=p_1\cdots p_m$, $W'_k>k^{\omega(k)}k/\rad(k)$ gives $n_k\ge\exp\big((1+o(1))(\log k)^2/\log\log k\big)$.
+\end{remark}
+
+\section{Primes larger than \texorpdfstring{$\sqrt k$}{sqrt k}}\label{sec:large}
+
+\begin{lemma}\label{lem:6}
+Let $p$ be a prime with $\sqrt k<p\le k$, so $L_p=1$ and $p^2>k$, and let $j=\lfloor k/p\rfloor$.
+\begin{enumerate}
+\item If $n\bmod p<k\bmod p$, then $\Bad_p(n)=\varnothing$.
+\item Otherwise, if $j=1$, the block contains exactly one multiple of $p$, at index $n\bmod p$, and $\Bad_p(n)=\{n\bmod p\}$.
+\item Otherwise ($j\ge2$), the block contains exactly $j$ multiples of $p$, at most one of which is divisible by $p^2$; $|\Bad_p(n)|=1$ iff one of them is divisible by $p^2$, and then that index is the bad one; if none is, all $j$ are bad.
+\end{enumerate}
+Consequently \eqref{eq:closed} holds.
+\end{lemma}
+\begin{proof}
+With $L_p=1$, $d_p=[\,n\bmod p\ge k\bmod p\,]$. If $n\bmod p<k\bmod p$ then $d_p=0$ and $\Bad_p=\varnothing$ by Lemma~\ref{lem:3}(1). Otherwise $d_p=1$, so $\Bad_p=\{i: v_p(n-i)\ge M_p\}$ is the set of indices of maximal valuation, and by Lemma~\ref{lem:2} the block contains exactly $j+\delta_1=j$ multiples of $p$. If $j=1$, the unique multiple of $p$ has index $i\equiv n\pmod p$ with $0\le i<p\le k$, i.e.\ $i=n\bmod p$; its valuation is $M_p\ge1$ and all other valuations are $0$. If $j\ge2$, two multiples of $p^2$ in the block would differ by at least $p^2>k$, so at most one index has valuation $\ge2$; if there is one it is the unique maximum, and otherwise all $j$ multiples of $p$ tie at valuation $1=M_p$.
+
+For \eqref{eq:closed}: the events $d_p=0$ and $d_p=1$ are disjoint, and $\Pr(d_p=0)=(k\bmod p)/p$. Given $d_p=1$: if $j=1$, $\Bad_p=\{i_0\}$ iff $n\bmod p=i_0$, which requires $i_0<p$ and $i_0\ge k\bmod p$ and has probability $1/p$ (if $i_0\ge p$ then $i_0\bmod p=i_0-p<k-p=k\bmod p$, so the indicator in \eqref{eq:closed} vanishes, as it should); if $j\ge2$, $\Bad_p=\{i_0\}$ iff $p^2\mid n-i_0$, which has probability $1/p^2$ and implies $n\bmod p=i_0\bmod p$, so that $d_p=1$ is exactly the condition $i_0\bmod p\ge k\bmod p$.
+\end{proof}
+
+\section{Periodicity and the exact density}\label{sec:density}
+
+\begin{proof}[Proof of Theorem~\ref{thm:density}]
+\emph{Step 1: $\Bad_p(n)$ depends only on $n\bmod p^{2L}$, where $L=L_p$.} Let $n'\equiv n\pmod{p^{2L}}$. The deficiency $d_p$ depends only on $n\bmod p^L$, so $d_p(n')=d_p(n)$. For each index $i$, $n'-i\equiv n-i\pmod{p^{2L}}$, so $v_p(n'-i)=v_p(n-i)$ whenever $v_p(n-i)<2L$, and $v_p(n'-i)\ge2L$ iff $v_p(n-i)\ge2L$. Two indices with valuation $\ge L+1$ would differ by a multiple of $p^{L+1}>k$, so at most one index has valuation $\ge L+1$. If no index has valuation $\ge2L$, all valuations agree between $n$ and $n'$, and so do $M_p$, $d_p$ and $\Bad_p$. If one index $i^*$ has $v_p(n-i^*)\ge2L$, it is the unique maximum for both $n$ and $n'$, and every other valuation is $\le L$ and agrees; by Lemma~\ref{lem:3}, $i^*$ is bad iff $d_p\ge1$, for $n$ and $n'$ alike, while another index $i$ would need $v_p(n-i)>M_p-d_p\ge2L-L=L$, which is impossible. So $\Bad_p(n')=\Bad_p(n)$, and $E_{p,i_0}$ is a union of residue classes modulo $p^{2L}$.
+
+The modulus $p^{2L-1}$ does not suffice in general. For $(k,p)=(6,3)$: the block of $n=12$ is $\{7,\dots,12\}$ with $v_3(9)=2$ at $i=3$ and $v_3(12)=1$ at $i=0$, so $M_3=2$, $d_3=[12\bmod3\ge6\bmod3]=1$ and $\Bad_3=\{3\}$; the block of $n=15\equiv12\pmod3$ is $\{10,\dots,15\}$ with $v_3(12)=v_3(15)=1$, so $M_3=1$, $d_3=1$ and $\Bad_3=\{0,3\}$.
+
+\emph{Step 2: admissibility.} By Lemma~\ref{lem:1} the set of bad indices is $\bigcup_{p\le k}\Bad_p(n)$, and it is nonempty by Corollary~\ref{cor:4}. So $n$ is admissible iff there is an $i_0$ with $\Bad_p(n)\subseteq\{i_0\}$ for every $p\le k$, i.e.\ $n\in\bigcap_{p\le k}E_{p,i_0}$. If this held for two indices $i_0\ne i_1$, every $\Bad_p(n)$ would be empty, contradicting Corollary~\ref{cor:4}; so the $k$ sets $\bigcap_pE_{p,i_0}$ are pairwise disjoint.
+
+\emph{Step 3: density.} By Step 1 and the Chinese remainder theorem, $\bigcap_{p\le k}E_{p,i_0}$ is a union of residue classes modulo $D_k$, and the proportion of classes it contains is $\prod_{p\le k}\Pr(E_{p,i_0})$, since $n\bmod D_k\mapsto(n\bmod p^{2L_p})_{p\le k}$ is a bijection. The natural density of a periodic set is its proportion of classes per period, and by Step 2 the admissible $n$ form the disjoint union over $i_0$; the restriction $n\ge2k$ does not affect density. The closed form \eqref{eq:closed} is Lemma~\ref{lem:6}.
+\end{proof}
+
+For $p\le\sqrt k$ the factor $\Pr(E_{p,i_0})$ can be computed by enumerating $n\bmod p^{2L_p}$; our implementation enumerates $n\bmod p^{L_p+1}$ and treats the valuation of the at most one multiple of $p^{L_p+1}$ as a geometric tail. Two independent implementations agree, and brute-force counts over full periods confirm, for instance, $\delta(7)=269/2520$, $\delta(11)=9803/831600$ and $\delta(12)=1/1386$.
+
+\section{The size of the density}\label{sec:asymp}
+
+Throughout this section $p$ denotes a prime, $\{x\}=x-\lfloor x\rfloor$, and for a prime $p\in(\sqrt k,k]$ with $p\nmid k$ we write
+\[j=j(p)=\lfloor k/p\rfloor,\qquad r=r(p)=k-jp=k\bmod p\in[1,p-1],\]
+so that $\{k/p\}=r/p$ and $1\le j<\sqrt k$. The at most one prime $p>\sqrt k$ dividing $k$ is excluded from $S(k)$ because $k\bmod p=0$; Part~1 below shows it contributes $O(\log k)$ to $\log(1/\delta(k))$. We use three classical inputs: the prime number theorem in the form $\pi(x)=\operatorname{li}(x)+E(x)$ with $E(x)\ll x\exp(-c\sqrt{\log x})$ \cite{dlVP}; the Brun--Titchmarsh inequality in the form of Montgomery and Vaughan \cite{MV73}, $\pi(x+y)-\pi(x)\le2y/\log y$ for integers $x\ge0$, $y\ge2$, which for a real interval of length $y\ge2$ (contained in an integer interval of length at most $y+1$) gives
+\begin{equation}\label{eq:BT}
+\pi(x+y)-\pi(x)\le\frac{3y}{\log y}\qquad(x\ge0,\ y\ge2\text{ real}),
+\end{equation}
+since $2(y+1)/\log(y+1)\le3y/\log y$ for $y\ge2$; and Chebyshev's bounds $\pi(x)\ll x/\log x$, $\vartheta(x)\ll x$.
+
+\begin{lemma}[injectivity]\label{lem:A}
+The map $p\mapsto k\bmod p$ is injective on the primes $p\in(\sqrt k,k]$ with $p\nmid k$.
+\end{lemma}
+\begin{proof}
+If $p\ne q$ are two such primes with $k\bmod p=k\bmod q=r$, then $pq\mid k-r$; but $k-r=jp\ge p>0$ and $k-r\le k<pq$.
+\end{proof}
+
+\begin{lemma}[the constant]\label{lem:B}
+For $j\ge1$, $c_j:=\int_j^{j+1}\frac{-\log(x-j)}{x^2}\,dx=\frac1j\log\big(1+\frac1j\big)$, and $\sum_{j\ge1}c_j=C$ with $\sum_{j>J}c_j\le1/J$.
+\end{lemma}
+\begin{proof}
+Substituting $u=x-j$, $c_j=\int_0^1\frac{-\log u}{(j+u)^2}\,du$. Integrate by parts with $v(u)=\frac{u}{j(j+u)}$, which satisfies $v'(u)=(j+u)^{-2}$ and $v(0)=0$:
+\[c_j=\Big[-\log u\cdot\frac{u}{j(j+u)}\Big]_0^1+\int_0^1\frac1u\cdot\frac{u}{j(j+u)}\,du=\frac1j\int_0^1\frac{du}{j+u}=\frac1j\log\frac{j+1}{j},\]
+the boundary term vanishing since $\log1=0$ and $u\log u\to0$. As $\log(1+1/j)\le1/j$, $c_j\le j^{-2}$ and $\sum_{j>J}c_j\le1/J$; splitting $[1,\infty)$ at the integers gives $\sum_jc_j=\int_1^\infty-\log\{x\}\,x^{-2}dx$. The expansion $\log(1+1/j)=\sum_{m\ge1}(-1)^{m+1}j^{-m}/m$ gives the zeta form of $C$: the $j=1$ term is $\log2=\sum_m(-1)^{m+1}/m$ (conditionally convergent), and for $j\ge2$ the double series converges absolutely, since $\zeta(m+1)-1\le3\cdot2^{-m-1}$, so the sums may be interchanged.
+\end{proof}
+
+\subsection*{Part 1: \texorpdfstring{$\log(1/\delta(k))=S(k)+O(\sqrt k)$}{log(1/delta) = S(k) + O(sqrt k)}}
+
+\emph{Upper bound for $\delta$.} In \eqref{eq:delta}, bound each of the $k$ summands by the product over the primes $p>\sqrt k$, $p\nmid k$ only (the other factors are at most $1$), and each such factor, using \eqref{eq:closed}, by $\{k/p\}+1/p$:
+\[\delta(k)\le k\prod_{\substack{\sqrt k<p\le k\\p\nmid k}}\Big(\Big\{\frac kp\Big\}+\frac1p\Big)=k\prod\Big\{\frac kp\Big\}\prod\Big(1+\frac1{k\bmod p}\Big).\]
+By Lemma~\ref{lem:A} the values $k\bmod p$ are distinct positive integers at most $k$, so $\sum\log(1+\frac1{k\bmod p})\le\sum_{r\le k}\frac1r\le\log k+1$. Hence $\log(1/\delta(k))\ge S(k)-2\log k-1$.
+
+\emph{Lower bound for $\delta$.} Keep only the term $i_0=0$ in \eqref{eq:delta}. For $p\le\sqrt k$ (so $L=L_p\ge1$): if $p^{2L}\mid n$ then $v_p(n)\ge2L$ while $v_p(n-i)=v_p(i)\le L<2L$ for $1\le i<k$ (as $i<k<p^{L+1}$); so $M_p=v_p(n)$ is attained only at $i=0$, and every other index has valuation $\le L\le M_p-d_p$ because $d_p\le L$; by Lemma~\ref{lem:3}, $\Bad_p(n)\subseteq\{0\}$. Thus $\Pr(E_{p,0})\ge p^{-2L}\ge k^{-2}$, and $\sum_{p\le\sqrt k}2\log k\ll\sqrt k$ by Chebyshev. For $\sqrt k<p\le k$ with $p\nmid k$, \eqref{eq:closed} gives $\Pr(E_{p,0})\ge\{k/p\}$. For the at most one prime $p>\sqrt k$ with $p\mid k$, $k\bmod p=0$ and \eqref{eq:closed} gives $\Pr(E_{p,0})\ge1/p^2\ge1/k^2$. Hence $\log(1/\delta(k))\le S(k)+O(\sqrt k)$.
+
+\subsection*{Part 2: \texorpdfstring{$S(k)=(C+o(1))\,k/\log k$}{S(k) = (C+o(1)) k/log k}}
+
+Fix $\varepsilon\in(0,1/e)$ and an integer $J\ge2$; they stay fixed while $k\to\infty$ (assume $k>(J+1)^2$), and are sent to $0$ and $\infty$ at the end. Cover the primes $p\in(\sqrt k,k]$, $p\nmid k$, by three classes according to $r=k\bmod p$ and $j=\lfloor k/p\rfloor$:
+\[\mathcal T:\ r\le4j,\qquad\mathcal D:\ 4j<r\le\varepsilon p,\qquad\mathcal B:\ r>\varepsilon p.\]
+($\mathcal T$ and $\mathcal B$ can overlap for $p<2\sqrt{k/\varepsilon}$. This is harmless: the upper bound on $S(k)$ only needs a cover, and the lower bound uses only the part of $\mathcal B$ with $j\le J$, which is a subset of the terms.)
+
+\emph{Class $\mathcal T$.} For primes with $r\le4j$ we have $jp\le k-1$ (as $r\ge1$) and $k\le jp+4j$, so $p\in[k/j-4,\,k/j)$, a half-open interval of length $4$ containing at most $4$ integers. So there are at most $4$ such primes for each of the fewer than $\sqrt k$ values of $j$, and every term is at most $\log p\le\log k$. The class contributes at most $4\sqrt k\log k=o(k/\log k)$.
+
+\emph{Class $\mathcal D$.} Group the primes by $j$ and by dyadic ranges $r\in(R,2R]$ with $R$ a power of $2$. A prime in the group satisfies $k-2R\le jp<k-R$, so $p$ lies in an interval of length $R/j$; and $r>4j$ forces $R>2j$, so $R/j>2$ and \eqref{eq:BT} applies: the group has at most $\frac{3R/j}{\log(R/j)}$ primes. Each term is $\log(p/r)\le\log\frac{k}{jR}$, since $p\le k/j$ and $r>R$. Also $R<r\le\varepsilon p\le\varepsilon k/j$.
+
+Put $V=\varepsilon k/j^2$ and, for a group with range $(R,2R]$, $u=R/j$; then $2<u<V$ and $\log\frac{k}{jR}=\log\frac Vu+\log\frac1\varepsilon$. So the contribution of fixed $j$ is at most
+\[\sum_u\frac{3u}{\log u}\Big(\log\frac Vu+\log\frac1\varepsilon\Big),\]
+where $u$ runs over the values $R/j$ with $R$ a power of two and $2<u<V$. The admissible $R$ are the powers of two below $\varepsilon k/j$; the largest, $R_{\max}$, satisfies $R_{\max}\ge\varepsilon k/(2j)$, so the $u$ are $V'/2^m$ ($m\ge0$) with $V/2\le V'<V$, and $V/2^{m+1}\le u\le V/2^m$.
+\begin{itemize}
+\item For $m\le\frac12\log_2V-1$: here $\log u\ge\log(V/2^{m+1})\ge\frac12\log V$ and $\log(V/u)\le(m+1)\log2$, so these terms sum to at most $\frac{6V}{\log V}\sum_{m\ge0}\frac{(m+1)\log2+\log(1/\varepsilon)}{2^m}\le\frac{24V}{\log V}\big(\log2+\log\frac1\varepsilon\big)$.
+\item For $m>\frac12\log_2V-1$: here $u\le V/2^m<2\sqrt V$, while $u>2$ gives $\log u\ge\log2$ and $\log(V/u)\le\log V$. Each such group contributes at most $\frac{6\sqrt V}{\log2}\big(\log V+\log\frac1\varepsilon\big)$, and there are at most $\log_2V$ such groups (as $u>2$ forces $2^m<V/2$). So these terms sum to $\ll\sqrt V(\log k)^2$, as $V\le k$ and $\varepsilon$ is fixed.
+\end{itemize}
+Now sum over $j$; only $j$ with $V>2$, i.e.\ $j<\sqrt{\varepsilon k/2}$, contribute. The $\sqrt V$ terms give $\ll\sqrt{\varepsilon k}(\log k)^2\sum_{j<\sqrt k}\frac1j\ll\sqrt k(\log k)^3=o(k/\log k)$. For $j\le k^{1/4}$, $\log V\ge\log(\varepsilon\sqrt k)\ge\frac14\log k$ for large $k$, so $\sum_{j\le k^{1/4}}\frac{24V}{\log V}(\log2+\log\frac1\varepsilon)\le\frac{96\varepsilon k}{\log k}(\log2+\log\frac1\varepsilon)\sum_jj^{-2}\ll\varepsilon\log(1/\varepsilon)\frac{k}{\log k}$. For $k^{1/4}<j<\sqrt{\varepsilon k/2}$, $\log V\ge\log2$, so these give $\ll\varepsilon k\log(1/\varepsilon)\sum_{j>k^{1/4}}j^{-2}\ll\varepsilon\log(1/\varepsilon)k^{3/4}=o(k/\log k)$. Altogether, class $\mathcal D$ contributes at most $A\,\varepsilon\log(1/\varepsilon)\,k/\log k+o(k/\log k)$ for an absolute constant $A$.
+
+\emph{Class $\mathcal B$, $j>J$.} Each term is $\log(p/r)<\log(1/\varepsilon)$. The primes with $j>J$ satisfy $p<k/J$, so by \eqref{eq:BT} with $x=0$ there are at most $\pi(k/J)\le\frac{3k}{J\log(k/J)}\le\frac{6k}{J\log k}$ of them for $k\ge J^2$. The contribution is at most $6\log(1/\varepsilon)\,k/(J\log k)$.
+
+\emph{Class $\mathcal B$, $j\le J$: the main term.} Fix $j\le J$. The primes of class $\mathcal B$ with $\lfloor k/p\rfloor=j$ are the primes in the interval
+\[I_j(\varepsilon)=\Big(\frac k{j+1},\ \frac k{j+\varepsilon}\Big),\]
+because $r>\varepsilon p\iff k>(j+\varepsilon)p$. (A prime $p\mid k$ with $\lfloor k/p\rfloor=j$ equals $k/j$, which is not in $I_j(\varepsilon)$, so the condition $p\nmid k$ excludes nothing here; and $I_j(\varepsilon)\subset(\sqrt k,k]$ since $k>(J+1)^2$.) On this interval put $g(t)=\log\frac{t}{k-jt}=-\log\big(\frac kt-j\big)$; then $0<g(t)<\log(1/\varepsilon)$ and $g'(t)=\frac1t+\frac j{k-jt}\le\frac{1+j/\varepsilon}t\le\frac{(J+1)(1+J/\varepsilon)}k$.
+
+By partial summation with $\pi(t)=\operatorname{li}(t)+E(t)$, writing $a<b$ for the endpoints of $I_j(\varepsilon)$,
+\[\sum_{p\in I_j(\varepsilon)}g(p)=\int_a^b\frac{g(t)}{\log t}\,dt+\big[g(t)E(t)\big]_a^b-\int_a^bg'(t)E(t)\,dt+O\big(\log\tfrac1\varepsilon\big),\]
+where the $O(\cdot)$ covers the endpoints. The two error terms are at most $2\log(1/\varepsilon)\max_{[a,b]}|E|+(b-a)\max_{[a,b]}|g'|\max_{[a,b]}|E|\ll_{\varepsilon,J}k\exp(-c'\sqrt{\log k})=o(k/\log k)$, since $[a,b]\subset[k/(J+1),k]$. For the main integral, $\log t=\log k+O(\log(J+1))=(1+o(1))\log k$ on $[a,b]$, so, substituting $x=k/t$, $dt=-k\,x^{-2}dx$,
+\[\int_a^b\frac{g(t)}{\log t}\,dt=\frac{(1+o(1))\,k}{\log k}\int_{j+\varepsilon}^{j+1}\frac{-\log(x-j)}{x^2}\,dx=:\frac{(1+o(1))\,k}{\log k}\,c_j(\varepsilon).\]
+Here $0\le c_j-c_j(\varepsilon)=\int_j^{j+\varepsilon}\frac{-\log(x-j)}{x^2}dx\le\frac1{j^2}\int_0^\varepsilon-\log u\,du=\frac{\varepsilon(1+\log(1/\varepsilon))}{j^2}\le\frac{2\varepsilon\log(1/\varepsilon)}{j^2}$ for $\varepsilon<1/e$. Summing over $j\le J$, with Lemma~\ref{lem:B} and $\sum_jj^{-2}<2$,
+\[\sum_{\substack{p\in\mathcal B\\j(p)\le J}}\log\frac pr=\frac{(1+o(1))\,k}{\log k}\sum_{j\le J}c_j(\varepsilon),\qquad C-\frac1J-4\varepsilon\log\frac1\varepsilon\ \le\ \sum_{j\le J}c_j(\varepsilon)\ \le\ C.\]
+
+\emph{Conclusion.} All terms of $S(k)$ are positive, so the $j\le J$ part of class $\mathcal B$ alone gives the lower bound, and the four pieces together give the upper bound:
+\[\Big(C-\frac1J-4\varepsilon\log\frac1\varepsilon-o(1)\Big)\frac k{\log k}\ \le\ S(k)\ \le\ \Big(C+A\varepsilon\log\frac1\varepsilon+\frac{6\log(1/\varepsilon)}J+o(1)\Big)\frac k{\log k},\]
+where $o(1)\to0$ as $k\to\infty$ with $\varepsilon,J$ fixed. Letting $k\to\infty$, then $J\to\infty$, then $\varepsilon\to0$, gives $S(k)=(C+o(1))\,k/\log k$. With Part~1 this proves Theorem~\ref{thm:asymp}.\qed
+
+\begin{remark}
+The convergence is slow. Averaged over $21$ consecutive values of $k$, $S(k)/(k/\log k)$ is $1.16$ near $k=100$, $1.37$ near $10^4$, and $1.34$ near $10^6$; the next term should be $c_2k/\log^2k$ with $c_2=\int_1^\infty-\log\{x\}\log x\,x^{-2}dx=1.0016551589\ldots$, obtainable by keeping the variation of $\log t$ in the main integral. The class bounds are visible numerically: the class $\mathcal D$ sum divided by $\varepsilon\log(1/\varepsilon)k/\log k$ is $2.29,2.08,2.10,1.97$ at $(k,\varepsilon)=(10^6,0.1),(10^6,0.02),(10^7,0.02),(10^7,0.005)$, so $A\approx2$ in practice. The small-prime part $\log(1/\delta(k))-S(k)$ lies between $3.2$ and $17.0$ for $31\le k\le110$.
+\end{remark}
+
+\section{The growth conjecture and the evidence}\label{sec:evidence}
+
+Theorem~\ref{thm:asymp} concerns the density of admissible $n$. If the admissible set behaved like a random set of density $\delta(k)$, its least element would be about $\Exp(1)/\delta(k)$; this is Conjecture~\ref{conj}. It is not a theorem, and we do not know how to prove either inequality in it (see Section~\ref{sec:cip}). The evidence is as follows.
+
+\emph{New values.} Table~\ref{tab:values} gives $n_k$ for $60\le k\le110$, extending the OEIS table. The values for $60\le k\le75$ were posted earlier in the discussion thread by jbell31 (28 July 2026), from a search that assumes rickyc's divisibility result; ours were obtained independently and agree with all $16$. Each value was obtained by an exhaustive search over the candidate set defined by the necessary conditions of Proposition~\ref{prop:5} and Lemma~\ref{lem:6}, with every candidate tested by the exact criterion of Lemmas~\ref{lem:1}--\ref{lem:2}; the same program reproduces the $58$ OEIS values for $k\le59$. Every value was then verified with exact integer arithmetic (exactly one of $n,\dots,n-k+1$ fails to divide $\binom nk$), and minimality was confirmed by a second, independently written exhaustive search, and for several $k$ by a plain scan from $2k$.
+
+\emph{Prime versus composite $k$.} The model reproduces the large swings between neighbouring $k$: primes dividing $k$ force $n-i_0$ to be divisible by $p^{a+\lfloor\log_p(k-1)\rfloor}$ (Proposition~\ref{prop:5}), which is why $n_{30}\approx3.8\cdot10^7$ while $n_{31}=8100$.
+
+\emph{Fit.} Let $x_k=\log n_k-\log(1/\delta(k))$. For $\log$ of an $\Exp(1)$ variable the mean is $-\gamma=-0.577$ and the standard deviation $\pi/\sqrt6=1.283$. For $31\le k\le110$ ($80$ values; sample standard deviations throughout) $x_k$ has mean $-0.58$ and standard deviation $1.19$, a Kolmogorov--Smirnov statistic $D=0.083$ against $\log\Exp(1)$ ($5\%$ critical value $0.152$), and $\log n_k$ and $\log(1/\delta(k))$ have correlation $0.988$ with regression slope $0.985$. For $k\le30$ the fit is poor (mean $+0.19$, $D=0.348$); there the constraint $n\ge2k$ and the coarse structure of the admissible set matter.
+
+\emph{Out-of-sample tests.} Before computing any $n_k$ with $k\ge60$, the central $90\%$ interval of $\Exp(1)/\delta(k)$, namely $[0.0513/\delta(k),\,2.996/\delta(k)]$, was recorded for every $60\le k\le100$; $38$ of the $41$ values fell inside (outside: $k=64,91,95$). The same was then done for $101\le k\le110$, with $9$ of $10$ inside (outside: $k=105$). Combined: $47$ of $51$, against $45.9$ expected. The model has no fitted parameters, so the order of events could not have influenced the predictions; the timestamped prediction files are in \cite{code}.
+
+\emph{Beyond the least element.} For $k\in\{40,45,50,61,64,67\}$ we enumerated the first $139$--$168$ admissible $n$ (Table~\ref{tab:traj}). The $m$-th admissible number is close to $m/\delta(k)$ (median of $m\,\delta(k)\,n^{(m)}$ between $0.90$ and $1.22$), the count below $X$ is within $11\%$ of $\delta(k)X$, the gaps between consecutive failing elements $n-i_0$ have coefficient of variation $0.84$--$1.02$ (exponential: $1$), and the observed frequencies of the failing index $i_0$ match the model's predicted weights $\prod_p\Pr(E_{p,i_0})$. So the model describes the whole admissible set, not only its least element; the least element is the noisy statistic (for $k=64$ it is $20$ times below $1/\delta$, the outlier $x_{64}=-3.0$ above). For $k\le30$ the admissible $n$ cluster (e.g.\ $n_{30}=37584001$ and $37584002$ share the failing element $37584000$), which is consistent with the worse fit at small $k$; for $k\ge40$ clusters are rare. Finally, an admissible $n$ lands in the carry-free window $n\bmod p<k\bmod p$ at all but on average $0.4$--$0.7$ of the primes $p\in(\sqrt k,k]$, $p\nmid k$, the exceptions being almost always primes $p>k/2$ dividing $n-i_0$. This is the structure a construction would have to reproduce (Section~\ref{sec:cip}).
+
+\begin{table}[h]
+\caption{The first admissible $n$ beyond $n_k$: $N$ values enumerated, the median of $m\,\delta(k)\,n^{(m)}$ over $m\le N$ (model: $\approx1$), the ratio of the count below $X=n^{(N)}$ to $\delta(k)X$, the coefficient of variation of the gaps between consecutive failing elements, and the mean number of large primes ($\sqrt k<p\le k$, $p\nmid k$) at which $n$ is \emph{not} in the carry-free window.}\label{tab:traj}
+{\setlength{\tabcolsep}{8pt}\begin{tabular}{rrrrrr}
+\toprule
+$k$ & $N$ & median $m\delta n^{(m)}$ & count$/\delta X$ & gap CV & non-window primes per $n$ \\
+\midrule
+40 & 139 & 1.05 & 0.95 & 0.97 & 0.43 \\
+45 & 139 & 1.22 & 0.94 & 0.90 & 0.67 \\
+50 & 150 & 1.08 & 0.98 & 0.94 & 0.48 \\
+61 & 168 & 0.90 & 1.11 & 0.94 & 0.66 \\
+64 & 150 & 0.99 & 1.00 & 1.02 & 0.54 \\
+67 & 161 & 0.98 & 1.06 & 0.84 & 0.41 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+
+\section{Relation to the claimed bounds of Cipollini}\label{sec:cip}
+
+If both claims in \eqref{eq:cip} hold, then Conjecture~\ref{conj} sits strictly between them and says that the upper bound is off by a factor of order $\log\log k$. In the data, for $31\le k\le100$, $\log n_k$ is between $0.47$ and $0.89$ (mean $0.68$) of the main term $\frac k{\log k}(\log\log k+\log\log\log k+\log2)$.
+
+The local lemmas of \cite{Ci26a} (its Lemma~2, ``stabilization'', and Lemma~3, ``one carry'') are the same facts as our Lemma~\ref{lem:3} and Lemma~\ref{lem:6}; Lemma~3 of \cite{Ci26b}, that $k\mid n-i_0$ for admissible $n$, is a special case of Proposition~\ref{prop:5}. The construction in \cite{Ci26a} takes $n=e+Mt$ with a small exceptional index $e\approx k/(2\log k\log\log k)$, forces the primes dividing $k\binom{k-1}e$ by divisibility, and uses a pigeonhole (simultaneous approximation) to put $n\bmod p$ into the carry-free window $[0,k\bmod p)$ for the remaining large primes. Pigeonhole on differences yields symmetric windows, of half-width $\min(e,(k\bmod p)-e)\le e$, at a cost of $\log(p/e)$ per prime; summed over primes this is $\frac k{\log k}(\log(k/e)-1+o(1))$. The density model's natural window is the full $[0,k\bmod p)$, at cost $\log\frac{p}{k\bmod p}$ per prime, and these costs sum to $S(k)\sim Ck/\log k$. The enumeration in Section~\ref{sec:evidence} shows that actual admissible $n$ do sit in the one-sided window at essentially every large prime. The gap between the two costs is exactly the gap between what a symmetric pigeonhole can reach and what a one-sided target would require; closing it appears to need an equidistribution-type input for the vectors $(n\bmod p)_{p}$ over $n\le e^{(C+\varepsilon)k/\log k}$, a range far smaller than the product of the moduli, and we do not know how to obtain one. The lower-bound half of the conjecture, that no admissible $n$ lies below $e^{(C-\varepsilon)k/\log k}$, is a least-element problem of Linnik type and seems out of reach.
+
+\appendix
+\section{The values \texorpdfstring{$n_k$}{n\_k} for \texorpdfstring{$60\le k\le110$}{60 <= k <= 110}}
+
+\begin{table}[h]
+\caption{$n_k$ and the bad index $i_0$ (so $n_k-i_0$ is the element of the block that fails to divide $\binom{n_k}{k}$).}\label{tab:values}
+\footnotesize
+\begin{tabular}{rrr@{\quad}rrr@{\quad}rrr}
+\toprule
+$k$ & $n_k$ & $i_0$ & $k$ & $n_k$ & $i_0$ & $k$ & $n_k$ & $i_0$\\
+\midrule
+60 & 2\,117\,441\,088\,029 & 29 & 61 & 569\,181\,900 & 50 & 62 & 155\,275\,274\,056 & 8 \\
+63 & 216\,949\,362\,182 & 35 & 64 & 2\,600\,001\,558 & 22 & 65 & 1\,936\,512\,990\,784 & 34 \\
+66 & 1\,618\,958\,347\,825 & 49 & 67 & 1\,178\,168\,706 & 37 & 68 & 260\,686\,545\,186 & 34 \\
+69 & 709\,479\,687\,556 & 28 & 70 & 66\,383\,308\,992\,066 & 66 & 71 & 13\,760\,436\,550 & 35 \\
+72 & 890\,473\,430\,071 & 55 & 73 & 40\,861\,892\,736 & 21 & 74 & 3\,146\,202\,243\,081 & 9 \\
+75 & 32\,639\,932\,074\,432 & 57 & 76 & 16\,233\,110\,681\,625 & 25 & 77 & 18\,874\,715\,290\,176 & 53 \\
+78 & 780\,422\,752\,841\,501 & 29 & 79 & 420\,957\,410\,952 & 14 & 80 & 60\,137\,833\,600\,000 & 0 \\
+81 & 2\,418\,072\,694\,480 & 46 & 82 & 94\,878\,375\,215\,625 & 9 & 83 & 885\,437\,574\,400 & 11 \\
+84 & 3\,765\,171\,612\,545\,280 & 0 & 85 & 1\,718\,626\,725\,667\,152 & 27 & 86 & 129\,713\,628\,198\,225 & 81 \\
+87 & 2\,221\,164\,774\,687\,826 & 82 & 88 & 754\,618\,137\,360\,426 & 42 & 89 & 3\,208\,190\,120\,080 & 80 \\
+90 & 57\,753\,167\,368\,032\,004 & 4 & 91 & 10\,789\,171\,853\,293\,890 & 56 & 92 & 2\,643\,061\,175\,354\,691 & 67 \\
+93 & 7\,201\,679\,510\,714\,780 & 29 & 94 & 2\,544\,131\,371\,430\,937 & 25 & 95 & 213\,706\,678\,047\,814 & 64 \\
+96 & 11\,795\,043\,698\,546\,775 & 87 & 97 & 10\,432\,185\,034\,560 & 35 & 98 & 23\,154\,863\,741\,528\,961 & 1 \\
+99 & 7\,525\,993\,870\,612\,546 & 43 & 100 & 24\,275\,936\,775\,680\,073 & 73 & 101 & 83\,339\,504\,740\,900 & 4 \\
+102 & 455\,022\,751\,908\,409\,400 & 56 & 103 & 80\,855\,126\,198\,850 & 57 & 104 & 28\,292\,410\,857\,118\,753 & 33 \\
+105 & 114\,184\,320\,231\,814\,976 & 101 & 106 & 505\,139\,783\,269\,972\,305 & 81 & 107 & 314\,604\,394\,073\,026 & 96 \\
+108 & 42\,039\,517\,780\,512\,072 & 72 & 109 & 92\,095\,914\,818\,376 & 95 & 110 & 4\,499\,581\,121\,078\,560\,101 & 101 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{thebibliography}{99}
+\bibitem{Ci26a} R.~Cipollini (with GPT-5.6 Sol), \emph{An upper bound for Erd\H{o}s--Selfridge problem 1063}, proof claim posted at \url{https://www.erdosproblems.com/1063}, submitted 2026-07-27.
+\bibitem{Ci26b} R.~Cipollini (with GPT-5.6 Sol), \emph{A lower bound for Erd\H{o}s--Selfridge problem 1063}, proof claim posted at \url{https://www.erdosproblems.com/1063}, submitted 2026-08-04.
+\bibitem{code} P.~Lee, \emph{Code, data and prediction files for Erd\H{o}s problem 1063}, \url{https://github.com/Paulee314/erdos1063}, 2026.
+\bibitem{dlVP} C.-J.~de la Vall\'ee Poussin, \emph{Sur la fonction $\zeta(s)$ de Riemann et le nombre des nombres premiers inf\'erieurs \`a une limite donn\'ee}, M\'em.\ Couronn\'es Acad.\ Roy.\ Sci.\ Bruxelles \textbf{59} (1899), 1--74.
+\bibitem{EP1063} T.~Bloom (ed.), \emph{Erd\H{o}s problem 1063}, \url{https://www.erdosproblems.com/1063}.
+\bibitem{ErSe83} P.~Erd\H{o}s and J.~L.~Selfridge, \emph{Problem 6447}, Amer.\ Math.\ Monthly \textbf{90} (1983), 710.
+\bibitem{FC} Google DeepMind, \emph{Formal Conjectures}, \texttt{FormalConjectures/ErdosProblems/1063.lean}, \url{https://github.com/google-deepmind/formal-conjectures}.
+\bibitem{Gu04} R.~K.~Guy, \emph{Unsolved problems in number theory}, 3rd ed., Springer, 2004, Problem B31.
+\bibitem{Ku26} P.-N.~Kung, L.~Song, D.~Hwang, J.~Yoon, C.-L.~Li, S.~Severini, M.~Ol\v{s}\'ak, E.~Lockhart, Q.~V.~Le, B.~Gokturk, T.~Luong, T.~Pfister and N.~Peng, \emph{LEAP: Supercharging LLMs for formal mathematics with agentic frameworks}, arXiv:2606.03303, 2026.
+\bibitem{Mo85} J.-M.~Monier, \emph{Solutions of Advanced Problems: 6447}, Amer.\ Math.\ Monthly \textbf{92} (1985), 435--436.
+\bibitem{MV73} H.~L.~Montgomery and R.~C.~Vaughan, \emph{The large sieve}, Mathematika \textbf{20} (1973), 119--134.
+\bibitem{OEIS} OEIS Foundation, \emph{Sequence A389360}, \url{https://oeis.org/A389360}.
+\bibitem{Wh26} P.~White (with Codex), \emph{Erd\H{o}s \#1063: a real upper-bound jump on $n_k$}, \url{https://erdosproblemaday.com/day/1063-one-large-prime}, 2026-07-25; code at \url{https://github.com/pw/erdos1063-upper-bound}.
+\end{thebibliography}
+
+\end{document}

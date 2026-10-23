@@ -1,0 +1,10 @@
+C = sum_j (1/j) log(1+1/j) ~ 1.2577469
+k~    100: mean S(k)/(k/log k) = 1.158 over 21 k (min 0.987, max 1.262)
+k~    400: mean S(k)/(k/log k) = 1.255 over 21 k (min 1.197, max 1.304)
+k~   1000: mean S(k)/(k/log k) = 1.318 over 21 k (min 1.282, max 1.354)
+k~  10000: mean S(k)/(k/log k) = 1.367 over 21 k (min 1.360, max 1.371)
+k~ 100000: mean S(k)/(k/log k) = 1.354 over 11 k (min 1.353, max 1.355)
+k~1000000: mean S(k)/(k/log k) = 1.339 over 7 k (min 1.339, max 1.339)
+log(1/delta)-S(k) for k=2..100: min -0.29, max 15.38 (at k=82)
+log(1/delta)-S(k) for k=31..100: min 3.24, max 15.38 (at k=82)
+log(1/delta)-S(k) for k=60..100: min 5.99, max 15.38 (at k=82)

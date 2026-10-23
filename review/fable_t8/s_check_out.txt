@@ -1,0 +1,81 @@
+C (series)   = 1.25774688694436963
+C (integral) = inf  (integral truncated ~ to 60, tail <1/60 handled by quad to inf w/ floor)
+  c_1: quad=0.6931471806 closed=0.6931471806 diff=2.3e-15
+  c_2: quad=0.2027325541 closed=0.2027325541 diff=4.2e-16
+  c_3: quad=0.0958940242 closed=0.0958940242 diff=-1.1e-15
+  c_10: quad=0.0095310180 closed=0.0095310180 diff=-1.4e-17
+  c_100: quad=0.0000995033 closed=0.0000995033 diff=6.8e-20
+c_2 (next-term constant) ≈ inf
+k=     1000: S(k)=        195.45  S/(k/log k)=1.3501  minus C = +0.0923  c2/log k = inf
+k=    10000: S(k)=       1487.88  S/(k/log k)=1.3704  minus C = +0.1126  c2/log k = inf
+k=   100000: S(k)=      11757.63  S/(k/log k)=1.3536  minus C = +0.0959  c2/log k = inf
+k=  1000000: S(k)=      96933.62  S/(k/log k)=1.3392  minus C = +0.0814  c2/log k = inf
+k= 10000000: S(k)=     824124.22  S/(k/log k)=1.3283  minus C = +0.0706  c2/log k = inf
+
+=== k=100000  eps=0.1  J=10   k/log k = 8685.89   #primes in sum = 9527
+S(k) = 11757.63,  S/(k/log k) = 1.3536   (C = 1.2577)
+  class T      : count=     186  sum=      545.71  sum/(k/log k)=0.0628
+  class D      : count=    1326  sum=     4271.10  sum/(k/log k)=0.4917
+  class B,j>J  : count=     953  sum=      732.50  sum/(k/log k)=0.0843
+  class B,j<=J : count=    7159  sum=     6307.70  sum/(k/log k)=0.7262
+  overlap T∩B count = 97  (classes are not disjoint as written)
+  T bound: count <= (log k)^2+4 sqrt k = 1397.5;  T sum bound ((log k)^2+4sqrt k)log k = 16088.8
+  B,j>J: count=953 <= pi(k/J)=1229;  proof bound 4 log(1/eps) k/(J log k) = 8000.0
+  D: eps log(1/eps) k/log k = 2000.0;  D sum / that = 2.136
+  B,j<=J main term (k/log k) sum c_j(eps) = 5940.10  [sum c_j(eps)=0.6839, C-1/J-4 eps log(1/eps)=0.2367]
+  B,j<=J exact integral sum_j ∫ g/log t  = 6340.85;   actual = 6307.70;  actual/main = 1.0619, actual/exact = 0.9948
+     j=1: count=3661, sum=3440.99, ∫g/log t=3451.28, (k/log k)c_j(eps)=3374.56
+     j=2: count=1339, sum=1141.44, ∫g/log t=1157.21, (k/log k)c_j(eps)=1072.83
+     j=3: count=698, sum=572.85, ∫g/log t=583.88, (k/log k)c_j(eps)=522.93
+     j=4: count=445, sum=359.17, ∫g/log t=354.06, (k/log k)c_j(eps)=308.98
+
+=== k=1000000  eps=0.1  J=10   k/log k = 72382.41   #primes in sum = 78330
+S(k) = 96933.62,  S/(k/log k) = 1.3392   (C = 1.2577)
+  class T      : count=     422  sum=     1176.43  sum/(k/log k)=0.0163
+  class D      : count=   11444  sum=    37830.51  sum/(k/log k)=0.5226
+  class B,j>J  : count=    7738  sum=     5854.27  sum/(k/log k)=0.0809
+  class B,j<=J : count=   58965  sum=    52314.20  sum/(k/log k)=0.7227
+  overlap T∩B count = 239  (classes are not disjoint as written)
+  T bound: count <= (log k)^2+4 sqrt k = 4190.9;  T sum bound ((log k)^2+4sqrt k)log k = 57899.0
+  B,j>J: count=7738 <= pi(k/J)=9592;  proof bound 4 log(1/eps) k/(J log k) = 66666.7
+  D: eps log(1/eps) k/log k = 16666.7;  D sum / that = 2.270
+  B,j<=J main term (k/log k) sum c_j(eps) = 49500.85  [sum c_j(eps)=0.6839, C-1/J-4 eps log(1/eps)=0.2367]
+  B,j<=J exact integral sum_j ∫ g/log t  = 52227.30;   actual = 52314.20;  actual/main = 1.0568, actual/exact = 1.0017
+     j=1: count=30415, sum=28683.21, ∫g/log t=28651.55, (k/log k)c_j(eps)=28121.37
+     j=2: count=11057, sum=9538.48, ∫g/log t=9518.55, (k/log k)c_j(eps)=8940.24
+     j=3: count=5771, sum=4800.36, ∫g/log t=4772.90, (k/log k)c_j(eps)=4357.79
+     j=4: count=3555, sum=2865.10, ∫g/log t=2880.45, (k/log k)c_j(eps)=2574.83
+
+=== k=1000000  eps=0.02  J=30   k/log k = 72382.41   #primes in sum = 78330
+S(k) = 96933.62,  S/(k/log k) = 1.3392   (C = 1.2577)
+  class T      : count=     422  sum=     1176.43  sum/(k/log k)=0.0163
+  class D      : count=    2359  sum=    11384.28  sum/(k/log k)=0.1573
+  class B,j>J  : count=    3224  sum=     3003.73  sum/(k/log k)=0.0415
+  class B,j<=J : count=   72643  sum=    81846.42  sum/(k/log k)=1.1308
+  overlap T∩B count = 318  (classes are not disjoint as written)
+  T bound: count <= (log k)^2+4 sqrt k = 4190.9;  T sum bound ((log k)^2+4sqrt k)log k = 57899.0
+  B,j>J: count=3224 <= pi(k/J)=3569;  proof bound 4 log(1/eps) k/(J log k) = 37754.9
+  D: eps log(1/eps) k/log k = 5663.2;  D sum / that = 2.010
+  B,j<=J main term (k/log k) sum c_j(eps) = 77372.01  [sum c_j(eps)=1.0689, C-1/J-4 eps log(1/eps)=0.9115]
+  B,j<=J exact integral sum_j ∫ g/log t  = 81988.21;   actual = 81846.42;  actual/main = 1.0578, actual/exact = 0.9983
+     j=1: count=35552, sum=43663.43, ∫g/log t=43775.29, (k/log k)c_j(eps)=43186.11
+     j=2: count=12488, sum=13711.05, ∫g/log t=13709.31, (k/log k)c_j(eps)=12912.37
+     j=3: count=6447, sum=6763.11, ∫g/log t=6728.93, (k/log k)c_j(eps)=6155.64
+     j=4: count=3959, sum=4042.29, ∫g/log t=4016.21, (k/log k)c_j(eps)=3595.47
+
+=== k=10000000  eps=0.02  J=30   k/log k = 620420.69   #primes in sum = 664133
+S(k) = 824124.22,  S/(k/log k) = 1.3283   (C = 1.2577)
+  class T      : count=    1116  sum=     2939.06  sum/(k/log k)=0.0047
+  class D      : count=   20728  sum=   101354.25  sum/(k/log k)=0.1634
+  class B,j>J  : count=   26784  sum=    24599.34  sum/(k/log k)=0.0396
+  class B,j<=J : count=  616385  sum=   696517.19  sum/(k/log k)=1.1227
+  overlap T∩B count = 880  (classes are not disjoint as written)
+  T bound: count <= (log k)^2+4 sqrt k = 12908.9;  T sum bound ((log k)^2+4sqrt k)log k = 208066.9
+  B,j>J: count=26784 <= pi(k/J)=28665;  proof bound 4 log(1/eps) k/(J log k) = 323613.3
+  D: eps log(1/eps) k/log k = 48542.0;  D sum / that = 2.088
+  B,j<=J main term (k/log k) sum c_j(eps) = 663188.63  [sum c_j(eps)=1.0689, C-1/J-4 eps log(1/eps)=0.9115]
+  B,j<=J exact integral sum_j ∫ g/log t  = 696458.30;   actual = 696517.19;  actual/main = 1.0503, actual/exact = 1.0001
+     j=1: count=303994, sum=374425.63, ∫g/log t=374481.80, (k/log k)c_j(eps)=370166.70
+     j=2: count=106147, sum=116570.10, ∫g/log t=116480.68, (k/log k)c_j(eps)=110677.43
+     j=3: count=54583, sum=57005.39, ∫g/log t=56919.05, (k/log k)c_j(eps)=52762.66
+     j=4: count=33297, sum=33783.04, ∫g/log t=33858.56, (k/log k)c_j(eps)=30818.34

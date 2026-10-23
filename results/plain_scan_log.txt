@@ -1,0 +1,9 @@
+Plain exhaustive scan (code/scan1063.c: Legendre test + safe large-prime prefilter only; does NOT use Corollary 5
+or the wheel), run on the Mac VM (4 cores), 2026-10-21 ~23:08-23:25 UTC. Transcribed from the session's run output.
+61 569181900 i0=50        (scan from 2k, 1 s)
+64 2600001558 i0=22       (scan from 2k, 4 s)
+67 1178168706 i0=37       (scan from 2k, 1 s)
+71 13760436550 i0=35      (scan from 2k, 20 s)
+73 40861892736 i0=21      (scan from 2k, 62 s)
+62 155275274056 i0=8      (chunks: [2k,6e10) none 75 s; [6e10,1.2e11) none 75 s; [1.2e11,1.8e11) hit 44 s)
+All agree with the wheel search (code/wheel1063.c).

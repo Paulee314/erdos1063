@@ -1,0 +1,4 @@
+105 114184320231814976 i0=101  (chunks [0,2e16) none; [2e16,1.2e17) hit; Mac VM, chunked variant)  2026-10-22T09:52:39Z
+110 4499581121078560101 i0=101  (chunks [0,1e18) none; [1e18,2.5e18) none; [2.5e18,4.6e18) hit; Mac VM, chunked variant)  2026-10-22T09:53:02Z
+102 455022751908409400 i0=56  (chunks [0,2e17) none; [2e17,4.6e17) hit; Mac VM, chunked variant)  2026-10-22T09:53:02Z
+106 505139783269972305 i0=81  (chunks [0,2.5e17) none; [2.5e17,5.1e17) hit; Mac VM, chunked variant)  2026-10-22T09:53:40Z

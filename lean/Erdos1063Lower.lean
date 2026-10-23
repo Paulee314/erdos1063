@@ -1,0 +1,375 @@
+import Mathlib
+
+/-!
+# Erdős Problem 1063: the exceptional element is divisible by `W'_k`
+
+Formalization of Corollary 5 of P. Lee, *The density of admissible n in Erdős–Selfridge
+problem 1063* (draft, 2026). If every element `n - i` (`0 ≤ i < k`, `i ≠ i0`) of the block
+divides `n.choose k`, then for every prime `p ∣ k`,
+`v_p(k) + ⌊log_p (k-1)⌋ ≤ v_p(n - i0)`. Hence
+`W'_k = ∏_{p ∣ k} p ^ (v_p k + ⌊log_p (k-1)⌋)` divides `n - i0`, and `W'_k ≤ n_k`.
+The definition of `n` is copied verbatim from
+`FormalConjectures/ErdosProblems/1063.lean` (google-deepmind/formal-conjectures).
+-/
+
+open Finset
+
+namespace Erdos1063Lower
+
+/-- Definition copied from DeepMind's formal-conjectures, `Erdos1063.n`. -/
+noncomputable def n (k : ℕ) : ℕ :=
+  sInf {m | 2 * k ≤ m ∧ ∃ i0 < k, ¬ (m - i0) ∣ m.choose k ∧
+    ∀ i < k, i ≠ i0 → (m - i) ∣ m.choose k}
+
+/-- Kummer's carry condition, restated as `n % q < k % q`. -/
+lemma carry_iff {n k q : ℕ} (hq : 0 < q) (hkn : k ≤ n) :
+    q ≤ k % q + (n - k) % q ↔ n % q < k % q := by
+  have h1 : n % q = (k % q + (n - k) % q) % q := by
+    rw [← Nat.add_mod]; congr 1; omega
+  have hk := Nat.mod_lt k hq
+  have hm := Nat.mod_lt (n - k) hq
+  constructor
+  · intro h
+    rw [h1, Nat.mod_eq_sub_mod h, Nat.mod_eq_of_lt (by omega)]
+    omega
+  · intro h
+    by_contra h'
+    push Not at h'
+    rw [h1, Nat.mod_eq_of_lt h'] at h
+    omega
+
+/-- **Corollary 5, one prime.** Only the divisibility of the *other* elements is used;
+not even `i0 < k` is needed. -/
+theorem valuation_bound {n k p i0 : ℕ} (hp : p.Prime) (hkn : 2 * k ≤ n) (hpk : p ∣ k)
+    (hk : 2 ≤ k)
+    (hgood : ∀ i < k, i ≠ i0 → (n - i) ∣ n.choose k) :
+    padicValNat p k + Nat.log p (k - 1) ≤ padicValNat p (n - i0) := by
+  have : Fact p.Prime := ⟨hp⟩
+  have hp2 : 2 ≤ p := hp.two_le
+  have hC : n.choose k ≠ 0 := (Nat.choose_pos (by omega)).ne'
+  set V := padicValNat p (n.choose k) with hV
+  set a := padicValNat p k with ha
+  set L' := Nat.log p (k - 1) with hL'
+  -- good elements have valuation at most V
+  have hle : ∀ i < k, i ≠ i0 → padicValNat p (n - i) ≤ V := by
+    intro i hi hne
+    have : p ^ padicValNat p (n - i) ∣ n.choose k :=
+      (pow_padicValNat_dvd).trans (hgood i hi hne)
+    exact (padicValNat_dvd_iff_le hC).mp this
+  have hdvd_r : ∀ e, p ^ e ∣ n - n % p ^ e := fun e => Nat.dvd_sub_mod n
+  -- two multiples of p^e in the block force e ≤ V
+  have two : ∀ e, n % p ^ e + p ^ e < k → e ≤ V := by
+    intro e he
+    have d1 := hdvd_r e
+    have d2 : p ^ e ∣ n - (n % p ^ e + p ^ e) := by
+      have : n - (n % p ^ e + p ^ e) = (n - n % p ^ e) - p ^ e := by omega
+      rw [this]; exact Nat.dvd_sub d1 (dvd_refl _)
+    by_cases h : n % p ^ e = i0
+    · have hne : n % p ^ e + p ^ e ≠ i0 := by
+        have := pow_pos hp.pos e; omega
+      have hpos : n - (n % p ^ e + p ^ e) ≠ 0 := by omega
+      exact ((padicValNat_dvd_iff_le hpos).mp d2).trans (hle _ he hne)
+    · have hpos : n - n % p ^ e ≠ 0 := by omega
+      exact ((padicValNat_dvd_iff_le hpos).mp d1).trans (hle _ (by omega) h)
+  -- the maximal valuation in the block
+  obtain ⟨istar, histar, hmax⟩ := Finset.exists_max_image (Finset.range k)
+    (fun i => padicValNat p (n - i)) ⟨0, by simp; omega⟩
+  set M := padicValNat p (n - istar) with hM
+  have hmaxM : ∀ i < k, padicValNat p (n - i) ≤ M := fun i hi => hmax i (by simpa using hi)
+  have reach : ∀ e, n % p ^ e < k → e ≤ M := by
+    intro e he
+    have hpos : n - n % p ^ e ≠ 0 := by omega
+    exact ((padicValNat_dvd_iff_le hpos).mp (hdvd_r e)).trans (hmaxM _ he)
+  have hpow_le : ∀ e, p ^ e ≤ k → e ≤ M := fun e he =>
+    reach e (lt_of_lt_of_le (Nat.mod_lt _ (pow_pos hp.pos e)) he)
+  -- Kummer
+  have hkum := padicValNat_choose (p := p) (n := n) (k := k) (b := Nat.log p n + 1)
+    (by omega) (Nat.lt_succ_self _)
+  set Cset := {i ∈ Finset.Ico 1 (Nat.log p n + 1) | p ^ i ≤ k % p ^ i + (n - k) % p ^ i}
+    with hCset
+  have hVc : V = Cset.card := hkum
+  have carry_mem : ∀ e ∈ Cset, n % p ^ e < k % p ^ e := by
+    intro e he
+    rw [hCset, Finset.mem_filter] at he
+    exact (carry_iff (pow_pos hp.pos e) (by omega)).mp he.2
+  have hapos : 1 ≤ a := one_le_padicValNat_of_dvd (by omega) hpk
+  have hpa : p ^ a ∣ k := pow_padicValNat_dvd
+  have hsub1 : Cset ⊆ Finset.Ioc a M := by
+    intro e he
+    have hc := carry_mem e he
+    rw [Finset.mem_Ioc]
+    constructor
+    · by_contra hle'
+      push Not at hle'
+      have : p ^ e ∣ k := (pow_dvd_pow p hle').trans hpa
+      rw [Nat.mod_eq_zero_of_dvd this] at hc
+      exact Nat.not_lt_zero _ hc
+    · exact reach e (lt_of_lt_of_le hc (Nat.mod_le _ _))
+  have hVle : V ≤ M - a := by
+    rw [hVc]
+    have := Finset.card_le_card hsub1
+    simpa using this
+  have haM : a ≤ M := hpow_le a (Nat.le_of_dvd (by omega) hpa)
+  have hL'k : p ^ L' ≤ k - 1 := Nat.pow_log_le_self p (by omega)
+  have hL'M : L' ≤ M := hpow_le L' (by omega)
+  -- the maximum is attained only at i0
+  have hstar : istar = i0 := by
+    by_contra hne
+    have := hle istar (by simpa using histar) hne
+    omega
+  have hM0 : padicValNat p (n - i0) = M := by rw [hM, hstar]
+  rw [hM0]
+  by_cases hcase : L' ≤ V
+  · omega
+  · push Not at hcase
+    have haL : a ≤ L' := by
+      by_contra h'
+      push Not at h'
+      have h1 : p ^ (L' + 1) ≤ k :=
+        (Nat.pow_le_pow_right hp.pos h').trans (Nat.le_of_dvd (by omega) hpa)
+      have h2 : 2 * p ^ L' ≤ p ^ (L' + 1) := by
+        rw [pow_succ]; nlinarith [pow_pos hp.pos L']
+      have := two L' (by have := Nat.mod_lt n (pow_pos hp.pos L'); omega)
+      omega
+    have haV : a ≤ V := by
+      have h1 : p ^ a ≤ k - 1 := (Nat.pow_le_pow_right hp.pos haL).trans hL'k
+      obtain ⟨m, hm⟩ := hpa
+      have hm2 : 2 ≤ m := by
+        by_contra h'
+        push Not at h'
+        interval_cases m <;> simp at hm <;> omega
+      have h3 : 2 * p ^ a ≤ k := by rw [hm]; nlinarith [pow_pos hp.pos a]
+      exact two a (by have := Nat.mod_lt n (pow_pos hp.pos a); omega)
+    have hsub2 : Cset ⊆ Finset.Ioc a M \ Finset.Ioc V L' := by
+      intro e he
+      rw [Finset.mem_sdiff]
+      refine ⟨hsub1 he, ?_⟩
+      intro he2
+      rw [Finset.mem_Ioc] at he2
+      have hc := carry_mem e he
+      have hqk : p ^ e ≤ k - 1 := (Nat.pow_le_pow_right hp.pos he2.2).trans hL'k
+      have hmodk : k % p ^ e + p ^ e ≤ k := by
+        have h5 := Nat.mod_add_div k (p ^ e)
+        have hdiv : 1 ≤ k / p ^ e := (Nat.one_le_div_iff (pow_pos hp.pos e)).mpr (by omega)
+        have h6 : p ^ e ≤ p ^ e * (k / p ^ e) := by
+          simpa using Nat.mul_le_mul_left (p ^ e) hdiv
+        omega
+      have := two e (by omega)
+      omega
+    have hsub3 : Finset.Ioc V L' ⊆ Finset.Ioc a M := by
+      intro e he; rw [Finset.mem_Ioc] at he ⊢; omega
+    have hcard := Finset.card_le_card hsub2
+    rw [Finset.card_sdiff_of_subset hsub3] at hcard
+    simp only [Nat.card_Ioc] at hcard
+    rw [← hVc] at hcard
+    omega
+
+/-- A product of powers of distinct primes divides `m` if each factor does. -/
+lemma prod_prime_pow_dvd {s : Finset ℕ} (hs : ∀ p ∈ s, p.Prime) (f : ℕ → ℕ) {m : ℕ}
+    (h : ∀ p ∈ s, p ^ f p ∣ m) : ∏ p ∈ s, p ^ f p ∣ m := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert q s hq ih =>
+    rw [Finset.prod_insert hq]
+    have hqs := hs q (Finset.mem_insert_self q s)
+    have ih' := ih (fun p hp => hs p (Finset.mem_insert_of_mem hp))
+      (fun p hp => h p (Finset.mem_insert_of_mem hp))
+    refine Nat.Coprime.mul_dvd_of_dvd_of_dvd ?_ (h q (Finset.mem_insert_self q s)) ih'
+    apply Nat.Coprime.prod_right
+    intro p hp
+    have hpp := hs p (Finset.mem_insert_of_mem hp)
+    have hne : q ≠ p := fun h' => hq (h' ▸ hp)
+    exact Nat.Coprime.pow _ _ ((Nat.coprime_primes hqs hpp).mpr hne)
+
+/-- `W'_k = ∏_{p ∣ k} p ^ (v_p k + ⌊log_p (k-1)⌋)`. -/
+def W (k : ℕ) : ℕ := ∏ p ∈ k.primeFactors, p ^ (padicValNat p k + Nat.log p (k - 1))
+
+/-- **Corollary 5.** `W'_k` divides the exceptional element. -/
+theorem W_dvd {n k i0 : ℕ} (hkn : 2 * k ≤ n) (hk : 2 ≤ k) (hi0 : i0 < k)
+    (hgood : ∀ i < k, i ≠ i0 → (n - i) ∣ n.choose k) : W k ∣ n - i0 := by
+  unfold W
+  apply prod_prime_pow_dvd (fun p hp => (Nat.mem_primeFactors.mp hp).1)
+  · intro p hp
+    rw [Nat.mem_primeFactors] at hp
+    have := Fact.mk hp.1
+    have hpos : n - i0 ≠ 0 := by omega
+    exact (padicValNat_dvd_iff_le hpos).mpr (valuation_bound hp.1 hkn hp.2.1 hk hgood)
+
+/-- `k ∣ W'_k`, since `p ^ v_p(k) ∣ p ^ (v_p(k) + ⌊log_p (k-1)⌋)` for every `p ∣ k`. -/
+lemma dvd_W {k : ℕ} (hk : k ≠ 0) : k ∣ W k := by
+  unfold W
+  conv_lhs => rw [Nat.prod_primeFactors_pow_factorization hk]
+  apply Finset.prod_dvd_prod_of_dvd
+  intro p hp
+  rw [Nat.factorization_def k (Nat.prime_of_mem_primeFactors hp)]
+  exact pow_dvd_pow p (Nat.le_add_right _ _)
+
+/-- **The failing index is `n mod k`.** Under the same hypothesis as `W_dvd`, `k ∣ n - i0`;
+in particular `i0 = n % k` when `i0 < k`. -/
+theorem k_dvd {n k i0 : ℕ} (hkn : 2 * k ≤ n) (hk : 2 ≤ k) (hi0 : i0 < k)
+    (hgood : ∀ i < k, i ≠ i0 → (n - i) ∣ n.choose k) : k ∣ n - i0 :=
+  (dvd_W (by omega)).trans (W_dvd hkn hk hi0 hgood)
+
+theorem index_eq_mod {n k i0 : ℕ} (hkn : 2 * k ≤ n) (hk : 2 ≤ k) (hi0 : i0 < k)
+    (hgood : ∀ i < k, i ≠ i0 → (n - i) ∣ n.choose k) : i0 = n % k := by
+  obtain ⟨t, ht⟩ := k_dvd hkn hk hi0 hgood
+  have h' : n = k * t + i0 := by omega
+  rw [h', Nat.mul_add_mod, Nat.mod_eq_of_lt hi0]
+
+/-- **Lower bound.** `W'_k ≤ n_k` (whenever an admissible `m` exists, e.g. for `k ≥ 3`
+by Cambie's bound, formalized by DeepMind's LEAP agent). -/
+theorem W_le_n {k : ℕ} (hk : 2 ≤ k)
+    (hne : {m | 2 * k ≤ m ∧ ∃ i0 < k, ¬ (m - i0) ∣ m.choose k ∧
+      ∀ i < k, i ≠ i0 → (m - i) ∣ m.choose k}.Nonempty) : W k ≤ n k := by
+  unfold n
+  obtain ⟨h2k, i0, hi0, -, hgood⟩ := Nat.sInf_mem hne
+  have hd := W_dvd h2k hk hi0 hgood
+  exact (Nat.le_of_dvd (by omega) hd).trans (Nat.sub_le _ _)
+
+/-- **Erdős–Selfridge.** Not every element of the block divides `n.choose k`
+(derived from `valuation_bound`: a prime `p ∣ k` would have to divide both `n` and `n - 1`). -/
+theorem exists_exception' {n k : ℕ} (hk : 2 ≤ k) (hkn : 2 * k ≤ n) :
+    ¬ ∀ i < k, (n - i) ∣ n.choose k := by
+  intro hall
+  have hp : (k.minFac).Prime := Nat.minFac_prime (by omega)
+  have hpk : k.minFac ∣ k := Nat.minFac_dvd k
+  have h0 := valuation_bound (i0 := 0) hp hkn hpk hk (fun i hi _ => hall i hi)
+  have h1 := valuation_bound (i0 := 1) hp hkn hpk hk (fun i hi _ => hall i hi)
+  have := Fact.mk hp
+  have ha : 1 ≤ padicValNat k.minFac k := one_le_padicValNat_of_dvd (by omega) hpk
+  have d0 : k.minFac ∣ n - 0 := dvd_of_one_le_padicValNat (by omega)
+  have d1 : k.minFac ∣ n - 1 := dvd_of_one_le_padicValNat (by omega)
+  have hsub := Nat.dvd_sub d0 d1
+  rw [show (n - 0) - (n - 1) = 1 by omega] at hsub
+  exact hp.one_lt.ne' (Nat.dvd_one.mp hsub)
+
+lemma lcm_facts {k : ℕ} (hk : 3 ≤ k) :
+    (Finset.Icc 1 (k - 1)).lcm id ≠ 0 ∧ 2 ≤ (Finset.Icc 1 (k - 1)).lcm id := by
+  have hL0 : (Finset.Icc 1 (k - 1)).lcm id ≠ 0 := by
+    rw [Ne, Finset.lcm_eq_zero_iff]; simp
+  refine ⟨hL0, Nat.le_of_dvd (Nat.pos_of_ne_zero hL0) ?_⟩
+  have : (2:ℕ) ∈ Finset.Icc 1 (k - 1) := by simp; omega
+  exact Finset.dvd_lcm this
+
+/-- In Cambie's witness `m = k * lcm(1, …, k-1)`, every `m - i` with `1 ≤ i < k`
+divides `m.choose k`. -/
+theorem cambie_good {k i : ℕ} (hk : 3 ≤ k) (hi1 : 1 ≤ i) (hik : i < k) :
+    (k * (Finset.Icc 1 (k - 1)).lcm id - i) ∣ (k * (Finset.Icc 1 (k - 1)).lcm id).choose k := by
+  obtain ⟨hL0, hL2⟩ := lcm_facts hk
+  set L := (Finset.Icc 1 (k - 1)).lcm id with hL
+  set m := k * L with hm
+  have hkm : 2 * k ≤ m := by rw [hm]; nlinarith
+  have hC : m.choose k ≠ 0 := (Nat.choose_pos (by omega)).ne'
+  rw [Nat.dvd_iff_prime_pow_dvd_dvd]
+  intro p e hp hpe
+  have := Fact.mk hp
+  have hmi0 : m - i ≠ 0 := by omega
+  set c := padicValNat p (m - i) with hc
+  have hec : e ≤ c := (padicValNat_dvd_iff_le hmi0).mp hpe
+  suffices hcV : c ≤ padicValNat p (m.choose k) from
+    (padicValNat_dvd_iff_le hC).mpr (hec.trans hcV)
+  set A := Nat.log p (k - 1) with hA
+  have hpA : p ^ A ≤ k - 1 := Nat.pow_log_le_self p (by omega)
+  have hA1 : k - 1 < p ^ (A + 1) := Nat.lt_pow_succ_log_self hp.one_lt (k - 1)
+  have hpAL : p ^ A ∣ L := by
+    have : p ^ A ∈ Finset.Icc 1 (k - 1) := by
+      simp only [Finset.mem_Icc]; exact ⟨Nat.one_le_pow _ _ hp.pos, hpA⟩
+    exact Finset.dvd_lcm this
+  have hkum := padicValNat_choose (p := p) (n := m) (k := k) (b := Nat.log p m + 1)
+    (by omega) (Nat.lt_succ_self _)
+  set Cs := {a ∈ Finset.Ico 1 (Nat.log p m + 1) | p ^ a ≤ k % p ^ a + (m - k) % p ^ a}
+    with hCs
+  rw [hkum]
+  have mem_of : ∀ a, 1 ≤ a → p ^ a ≤ m → m % p ^ a < k % p ^ a → a ∈ Cs := by
+    intro a ha1 hpm hcar
+    rw [hCs, Finset.mem_filter, Finset.mem_Ico]
+    refine ⟨⟨ha1, Nat.lt_succ_of_le (Nat.le_log_of_pow_le hp.one_lt hpm)⟩, ?_⟩
+    exact (carry_iff (pow_pos hp.pos a) (by omega)).mpr hcar
+  by_cases hcA : c ≤ A
+  · -- carries at the A levels (v_p k, v_p k + A]
+    set s := padicValNat p k with hs
+    have hsub : Finset.Ioc s (s + A) ⊆ Cs := by
+      intro a ha
+      rw [Finset.mem_Ioc] at ha
+      have hdm : p ^ a ∣ m := (pow_dvd_pow p ha.2).trans (by
+        rw [pow_add, hm]; exact Nat.mul_dvd_mul pow_padicValNat_dvd hpAL)
+      have hnk : ¬ p ^ a ∣ k := fun h => by
+        have := (padicValNat_dvd_iff_le (by omega)).mp h; omega
+      apply mem_of a (by omega) (Nat.le_of_dvd (by omega) hdm)
+      rw [Nat.mod_eq_zero_of_dvd hdm]
+      exact Nat.pos_of_ne_zero (fun h => hnk (Nat.dvd_of_mod_eq_zero h))
+    have h := Finset.card_le_card hsub
+    rw [Nat.card_Ioc] at h
+    omega
+  · push Not at hcA
+    have hdvd : p ^ (A + 1) ∣ m - i := (pow_dvd_pow p hcA).trans pow_padicValNat_dvd
+    have hpk : ¬ p ∣ k := by
+      intro hpk
+      have hdm : p ^ (A + 1) ∣ m := by
+        rw [hm, pow_succ, mul_comm (p ^ A) p]; exact Nat.mul_dvd_mul hpk hpAL
+      have hdi : p ^ (A + 1) ∣ i := by
+        have h' := Nat.dvd_sub hdm hdvd
+        rwa [show m - (m - i) = i by omega] at h'
+      have := Nat.le_of_dvd (by omega) hdi
+      omega
+    have hkp : k < p ^ (A + 1) := by
+      rcases Nat.lt_or_ge k (p ^ (A + 1)) with h | h
+      · exact h
+      · exfalso
+        have h' : p ^ (A + 1) = k := by omega
+        exact hpk (h' ▸ dvd_pow_self p (Nat.succ_ne_zero A))
+    have hsub : Finset.Icc 1 c ⊆ Cs := by
+      intro a ha
+      rw [Finset.mem_Icc] at ha
+      have hdmi : p ^ a ∣ m - i := (pow_dvd_pow p ha.2).trans pow_padicValNat_dvd
+      by_cases haA : a ≤ A
+      · have hdm : p ^ a ∣ m := (pow_dvd_pow p haA).trans (hpAL.trans (dvd_mul_left L k))
+        apply mem_of a ha.1 (Nat.le_of_dvd (by omega) hdm)
+        rw [Nat.mod_eq_zero_of_dvd hdm]
+        apply Nat.pos_of_ne_zero
+        intro h
+        exact hpk ((dvd_pow_self p (by omega)).trans (Nat.dvd_of_mod_eq_zero h))
+      · push Not at haA
+        have hka : k < p ^ a := lt_of_lt_of_le hkp (Nat.pow_le_pow_right hp.pos haA)
+        have hmod : m % p ^ a = i := by
+          obtain ⟨t, ht⟩ := hdmi
+          have h' : m = p ^ a * t + i := by omega
+          rw [h', Nat.mul_add_mod, Nat.mod_eq_of_lt (by omega)]
+        apply mem_of a ha.1 ((Nat.le_of_dvd (Nat.pos_of_ne_zero hmi0) hdmi).trans (Nat.sub_le _ _))
+        rw [hmod, Nat.mod_eq_of_lt hka]
+        exact hik
+    have h := Finset.card_le_card hsub
+    rw [Nat.card_Icc] at h
+    omega
+
+/-- Cambie's witness is admissible, with exceptional index `0`. -/
+theorem cambie_mem {k : ℕ} (hk : 3 ≤ k) :
+    k * (Finset.Icc 1 (k - 1)).lcm id ∈ {m | 2 * k ≤ m ∧ ∃ i0 < k, ¬ (m - i0) ∣ m.choose k ∧
+      ∀ i < k, i ≠ i0 → (m - i) ∣ m.choose k} := by
+  obtain ⟨hL0, hL2⟩ := lcm_facts hk
+  have h2k : 2 * k ≤ k * (Finset.Icc 1 (k - 1)).lcm id := by nlinarith
+  refine ⟨h2k, 0, by omega, ?_, ?_⟩
+  · intro hdiv
+    apply exists_exception' (by omega) h2k
+    intro i hi
+    rcases Nat.eq_zero_or_pos i with rfl | hpos
+    · exact hdiv
+    · exact cambie_good hk hpos hi
+  · intro i hi hne
+    exact cambie_good hk (Nat.pos_of_ne_zero hne) hi
+
+/-- **Cambie's upper bound** (same statement as `erdos_1063.variants.cambie_upper_bound`). -/
+theorem cambie_upper_bound {k : ℕ} (hk : 3 ≤ k) : n k ≤ k * (Finset.Icc 1 (k - 1)).lcm id :=
+  Nat.sInf_le (cambie_mem hk)
+
+/-- **Main result (unconditional).** For `k ≥ 3`, `W'_k ≤ n_k`. -/
+theorem W_le_n_of_three_le {k : ℕ} (hk : 3 ≤ k) : W k ≤ n k :=
+  W_le_n (by omega) ⟨_, cambie_mem hk⟩
+
+end Erdos1063Lower
+
+-- sanity checks: W'_4 = 8, W'_6 = 72, W'_14 = 784 (attained: n_4 - 1, n_6 - 3, n_14 - 9)
+#eval (Erdos1063Lower.W 4, Erdos1063Lower.W 6, Erdos1063Lower.W 14, Erdos1063Lower.W 30)
+#print axioms Erdos1063Lower.W_le_n_of_three_le
+#print axioms Erdos1063Lower.cambie_upper_bound
+#print axioms Erdos1063Lower.index_eq_mod

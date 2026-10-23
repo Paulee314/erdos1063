@@ -1,0 +1,18 @@
+9c9,11
+<  * Usage: mywheel k [hi]   (env QMAX, default 4e11) */
+---
+>  * Usage: mywheel k [hi] [lo]   (env QMAX, default 4e11)
+>  * CHUNKED VARIANT: identical to Fable's mywheel.c except for an optional third argument lo; the scan for each i0
+>  * starts at the period containing lo and skips n < lo. Chunks [lo,hi) therefore partition the search. */
+38c40
+<     int k = atoi(argv[1]); u64 HI = argc > 2 ? strtoull(argv[2], 0, 10) : ~0ULL;
+---
+>     int k = atoi(argv[1]); u64 HI = argc > 2 ? strtoull(argv[2], 0, 10) : ~0ULL; u64 LO = argc > 3 ? strtoull(argv[3], 0, 10) : 0;
+69c71
+<         for (u64 t = 0; ; t++) {
+---
+>         for (u64 t = LO / Q; ; t++) {
+75c77
+<                 if (n < (u64)(2 * k) || n >= cb) continue;
+---
+>                 if (n < LO || n < (u64)(2 * k) || n >= cb) continue;

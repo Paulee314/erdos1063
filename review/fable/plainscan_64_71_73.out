@@ -1,0 +1,9 @@
+k=64 primes=18 prefilter primes=7 lo=128 hi=1000000000000 threads=2
+64 2600001558 i0=22  (full tests: 7825879)
+k=64 wall=29s
+k=71 primes=20 prefilter primes=9 lo=142 hi=1000000000000 threads=2
+71 13760436550 i0=35  (full tests: 3092954)
+k=71 wall=170s
+k=73 primes=21 prefilter primes=10 lo=146 hi=1000000000000 threads=2
+73 40861892736 i0=21  (full tests: 1043856)
+k=73 wall=376s

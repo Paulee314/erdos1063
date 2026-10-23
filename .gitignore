@@ -1,0 +1,4 @@
+lean/erdos1063/.lake/
+*.aux
+*.log
+.DS_Store

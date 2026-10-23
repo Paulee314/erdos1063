@@ -1,0 +1,30 @@
+  2 log(1/delta)=0.000000 argmax=  0  delta=1  | model -0.000000 argmax   0  diff=+0.00e+00 
+  3 log(1/delta)=0.405465 argmax=  1  delta=2/3  | model 0.405465 argmax   1  diff=+1.08e-07 
+  4 log(1/delta)=1.386294 argmax=  1  delta=1/4  | model 1.386294 argmax   1  diff=+3.61e-07 
+  5 log(1/delta)=1.321756 argmax=  2  delta=4/15  | model 1.321756 argmax   2  diff=-1.60e-07 
+  6 log(1/delta)=3.583519 argmax=  1  delta=1/36  | model 3.583519 argmax   1  diff=-6.15e-08 
+  7 log(1/delta)=2.237303 argmax=  2  delta=269/2520  | model 2.237303 argmax   2  diff=-1.99e-07 
+  8 log(1/delta)=3.555348 argmax=  3  delta=1/35  | model 3.555348 argmax   3  diff=+6.15e-08 
+  9 log(1/delta)=4.047825 argmax=  4  delta=11/630  | model 4.047825 argmax   4  diff=-4.53e-07 
+ 10 log(1/delta)=6.532731 argmax=  4  delta=11/7560  | model 6.532731 argmax   4  diff=+1.96e-07 
+ 11 log(1/delta)=4.440663 argmax=  4  delta=9803/831600  | model 4.440663 argmax   4  diff=+9.47e-08 
+ 12 log(1/delta)=7.234177 argmax=  5  delta=1/1386  | model 7.234177 argmax   5  diff=+1.80e-07 
+ 13 log(1/delta)=4.665831 argmax=  6  delta=323/34320  | model 4.665831 argmax   6  diff=+2.30e-07 
+ 14 log(1/delta)=8.322295 argmax=  5  delta=209/859950  | model 8.322295 argmax   5  diff=+2.75e-07 
+ 15 log(1/delta)=8.740303 argmax=  5  delta=24217/151351200  | model 8.740303 argmax   5  diff=+3.77e-07 
+ 16 log(1/delta)=7.773566 argmax=  7  delta=283/672672  | model 7.773566 argmax   7  diff=+2.22e-07 
+ 17 log(1/delta)=6.227707 argmax=  8  delta=1692991/857656800  | model 6.227707 argmax   8  diff=+2.32e-07 
+ 18 log(1/delta)=10.116033 argmax=  8  delta=22289/551350800  | model 10.116033 argmax   8  diff=+2.63e-07 
+ 19 log(1/delta)=7.326764 argmax=  8  delta=75653/115026912  | model 7.326764 argmax   8  diff=+3.02e-07 
+ 20 log(1/delta)=10.789537 argmax=  9  delta=1333/64664600  | model 10.789537 argmax   9  diff=+1.49e-07 
+ 21 log(1/delta)=11.831021 argmax= 10  delta=23711/3259095840  | model 11.831021 argmax  10  diff=+2.90e-07 
+ 22 log(1/delta)=12.722603 argmax=  9  delta=133673/44812567800  | model 12.722603 argmax   9  diff=-3.30e-07 
+ 23 log(1/delta)=8.705590 argmax= 10  delta=163911367/989461497024  | model 8.705590 argmax  10  diff=+2.95e-07 
+ 24 log(1/delta)=12.570580 argmax= 11  delta=150179/43245694800  | model 12.570580 argmax  11  diff=+3.28e-07 
+ 25 log(1/delta)=10.403105 argmax= 12  delta=11370617/374796021600  | model 10.403105 argmax  12  diff=-3.57e-07 
+ 26 log(1/delta)=14.017919 argmax=  9  | model 14.017919 argmax   9  diff=-4.90e-07 
+ 27 log(1/delta)=12.181970 argmax= 11  | model 12.181970 argmax  11  diff=-1.50e-07 
+ 28 log(1/delta)=14.996741 argmax=  9  delta=46729/152260883775  | model 14.996741 argmax   9  diff=-8.75e-09 
+ 29 log(1/delta)=11.396121 argmax= 10  | model 11.396121 argmax  10  diff=-1.67e-07 
+ 30 log(1/delta)=17.457716 argmax=  9  | model 17.457716 argmax   9  diff=+4.25e-07 
+max |diff| in log(1/delta) vs model files: 4.902314714172462e-07

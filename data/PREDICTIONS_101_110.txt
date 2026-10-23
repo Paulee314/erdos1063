@@ -1,0 +1,14 @@
+# Erdos #1063: model predictions for n_k, k = 101..110, written BEFORE computing these n_k.
+# Generated 2026-10-22T05:00:52+00:00
+# Model: n_k ~ Exp(1)/delta_k, delta_k = exact density of valid n (density2.c). No fitted parameters.
+# Columns: k  log(1/delta)  median=ln2/delta  central 90% interval [0.0513/delta, 2.996/delta]
+101   32.384  8.034e+13  [5.95e+12, 3.47e+14]
+102   41.350  6.296e+17  [4.66e+16, 2.72e+18]
+103   33.143  1.716e+14  [1.27e+13, 7.42e+14]
+104   38.986  5.921e+16  [4.38e+15, 2.56e+17]
+105   42.559  2.108e+18  [1.56e+17, 9.11e+18]
+106   40.791  3.599e+17  [2.66e+16, 1.56e+18]
+107   33.547  2.572e+14  [1.90e+13, 1.11e+15]
+108   40.051  1.717e+17  [1.27e+16, 7.42e+17]
+109   33.687  2.957e+14  [2.19e+13, 1.28e+15]
+110   42.754  2.564e+18  [1.90e+17, 1.11e+19]
