@@ -23,14 +23,14 @@
 \title[The density of admissible $n$ in Erd\H{o}s problem 1063]{The density of admissible $n$ in Erd\H{o}s--Selfridge problem 1063, with a growth conjecture for $n_k$}
 \author{Paul Lee}
 \address{Houston, Texas}
-\date{October 22, 2026}
+\date{October 23, 2026}
 
 \begin{document}
 
 \begin{abstract}
 For $k\ge2$ let $n_k\ge2k$ be the least $n$ such that $n-i$ divides $\binom nk$ for all but exactly one $0\le i<k$ (Erd\H{o}s problem 1063, OEIS A389360). We describe, prime by prime, which index fails: $(n-i)\nmid\binom nk$ iff $v_p(n-i)>M_p(n)-d_p(n)$ for some prime $p\le k$, where $M_p$ is the largest $p$-adic valuation in the block $\{n-k+1,\dots,n\}$ and $d_p$ counts the non-carries in the lowest $\lfloor\log_pk\rfloor$ digits when $k$ and $n-k$ are added in base $p$. This gives a two-line proof of the Erd\H{o}s--Selfridge observation and the explicit lower bound $n_k-i_0\ge\prod_{p^a\|k}p^{a+\lfloor\log_p(k-1)\rfloor}$ for the failing index $i_0$ (with equality for $k=4,6,14$), hence $n_k\ge\prod_{p^a\|k}p^{a+\lfloor\log_p(k-1)\rfloor}$; this bound is formally verified in Lean~4. The admissible $n$ form a periodic set whose density $\delta(k)$ is an explicit finite product-sum, and we prove
 \[\log\frac1{\delta(k)}=(C+o(1))\,\frac{k}{\log k},\qquad C=\sum_{j\ge1}\frac1j\log\Big(1+\frac1j\Big)=1.25774688694\ldots\]
-We conjecture that $n_k\delta(k)$ behaves like an exponential random variable, so that $\log n_k=(C+o(1))k/\log k$, and support this with the values $n_k$ for $60\le k\le110$ (extending the OEIS table, which ends at $k=59$, and the values for $k\le75$ posted in the discussion thread), two pre-registered out-of-sample tests, and a correlation of $0.988$ between $\log n_k$ and $\log(1/\delta(k))$ for $31\le k\le110$. The conjecture lies strictly between the bounds $c(\log k)^2$ and $(1+o(1))\,k\log\log k/\log k$ recently claimed by Cipollini, and predicts that the upper one is off by a factor of order $\log\log k$.
+We conjecture that $n_k\delta(k)$ behaves like an exponential random variable, so that $\log n_k=(C+o(1))k/\log k$, and support this with the values $n_k$ for $60\le k\le140$ and for prime $k\le167$ (extending the OEIS table, which ends at $k=59$, and the values for $k\le75$ posted in the discussion thread), four pre-registered out-of-sample tests, and a correlation of $0.993$ between $\log n_k$ and $\log(1/\delta(k))$ for $31\le k\le140$. The conjecture lies strictly between the bounds $c(\log k)^2$ and $(1+o(1))\,k\log\log k/\log k$ recently claimed by Cipollini, and predicts that the upper one is off by a factor of order $\log\log k$.
 \end{abstract}
 
 \maketitle
@@ -59,7 +59,7 @@ For every prime $p\le k$, $v_p\binom nk=M_p(n)-d_p(n)$, and an index $i$ is bad 
 \begin{theorem}[explicit lower bound]\label{thm:lower}
 If $n$ is admissible with bad index $i_0$, then
 \[W'_k:=\prod_{p^a\|k}p^{\,a+\lfloor\log_p(k-1)\rfloor}\quad\text{divides}\quad n-i_0.\]
-Hence $n_k\ge W'_k$. Equality $n_k-i_0=W'_k$ holds for $k=4,6,14$ and for no other $k\le110$.
+Hence $n_k\ge W'_k$. Equality $n_k-i_0=W'_k$ holds for $k=4,6,14$ and for no other $k\le140$.
 \end{theorem}
 
 \begin{theorem}[exact density]\label{thm:density}
@@ -88,10 +88,10 @@ $n_k\,\delta(k)$ is approximately an $\Exp(1)$ random variable, so that typicall
 \[\log n_k=(C+o(1))\,\frac{k}{\log k}.\]
 \end{conjecture}
 
-Section~\ref{sec:evidence} reports the evidence: the values $n_k$ for $60\le k\le110$ (Table~\ref{tab:values}), two pre-registered out-of-sample tests in which $47$ of $51$ values fell inside the central $90\%$ interval of $\Exp(1)/\delta(k)$ ($46$ expected), and the statistics of $\log n_k-\log(1/\delta(k))$. Section~\ref{sec:cip} explains why the construction behind the upper bound in \eqref{eq:cip} loses a factor of order $\log\log k$ relative to the conjecture.
+Section~\ref{sec:evidence} reports the evidence: the values $n_k$ for $60\le k\le140$ and for prime $k\le167$ (Tables~\ref{tab:values} and~\ref{tab:values2}), four pre-registered out-of-sample tests in which $78$ of $86$ values fell inside the central $90\%$ interval of $\Exp(1)/\delta(k)$ ($77.4$ expected), and the statistics of $\log n_k-\log(1/\delta(k))$. Section~\ref{sec:cip} explains why the construction behind the upper bound in \eqref{eq:cip} loses a factor of order $\log\log k$ relative to the conjecture.
 
 \subsection*{Provenance}
-The analysis, the search code and the first draft of this paper were produced with Claude (Anthropic) at the author's direction. The mathematics was independently refereed by further AI reviewers, including Claude Fable 5.1, Gemini 4 Argon and a Meta AI model, using independently written code; every value in Table~\ref{tab:values} was verified by exact integer arithmetic, and minimality was confirmed by two independently written exhaustive searches. Code, data and the pre-registered prediction files are available at \cite{code}.
+The analysis, the search code and the first draft of this paper were produced with Claude (Anthropic) at the author's direction. The mathematics was independently refereed by further AI reviewers, including Claude Fable 5.1, Gemini 4 Argon and a Meta AI model, using independently written code; every value in Tables~\ref{tab:values} and~\ref{tab:values2} was verified by exact integer arithmetic; minimality was confirmed by two independently written exhaustive searches for every $k\le119$ and for $k=127$, and for the remaining values rests on one search that reproduces every previously computed value (Section~\ref{sec:evidence}). Code, data and the pre-registered prediction files are available at \cite{code}.
 
 \section{The bad set, prime by prime}\label{sec:local}
 
@@ -147,7 +147,7 @@ If $k=p^L$, then $a=L$, $d_p=L$, and the block contains $p\ge2$ multiples of $p^
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:lower}]
-By Proposition~\ref{prop:5}, $p^{a+\lfloor\log_p(k-1)\rfloor}\mid n-i_0$ for every $p^a\|k$, so $W'_k\mid n-i_0$ and $n_k\ge n_k-i_0\ge W'_k$. The equality cases were checked against Table~\ref{tab:values} and the OEIS values: $n_4-1=8$, $n_6-3=72$, $n_{14}-9=784$, and $n_k-i_0>W'_k$ for every other $k\le110$.
+By Proposition~\ref{prop:5}, $p^{a+\lfloor\log_p(k-1)\rfloor}\mid n-i_0$ for every $p^a\|k$, so $W'_k\mid n-i_0$ and $n_k\ge n_k-i_0\ge W'_k$. The equality cases were checked against Tables~\ref{tab:values} and~\ref{tab:values2} and the OEIS values: $n_4-1=8$, $n_6-3=72$, $n_{14}-9=784$, and $n_k-i_0>W'_k$ for every other $k\le140$.
 \end{proof}
 
 \noindent\emph{Formal verification.} Proposition~\ref{prop:5} (in the slightly stronger form that uses only the divisibility of the elements $n-i$, $i\ne i_0$), the divisibility $W'_k\mid n-i_0$, and the unconditional bound $W'_k\le n_k$ for $k\ge3$ have been formally verified in Lean~4 with Mathlib, using the definition of $n_k$ from \cite{FC} verbatim. The same file proves rickyc's sharper divisibility $p^{\,a+v_p\binom{k-1}{e}+\lfloor\log_p\max(e,k-1-e)\rfloor}\mid n-e$ for every $p^a\|k$, and that the failing index is $e=n\bmod k$; together these are the structural input of the search of jbell31, whose minimality claims therefore no longer rest on an unformalized step. It also proves Cambie's bound $n_k\le k\operatorname{lcm}(1,\dots,k-1)$ independently of \cite{Ku26}; it is part of \cite{code}. The case $k=2$ is immediate ($W'_2=2<4=n_2$).
@@ -267,13 +267,13 @@ The convergence is slow. Averaged over $21$ consecutive values of $k$, $S(k)/(k/
 
 Theorem~\ref{thm:asymp} concerns the density of admissible $n$. If the admissible set behaved like a random set of density $\delta(k)$, its least element would be about $\Exp(1)/\delta(k)$; this is Conjecture~\ref{conj}. It is not a theorem, and we do not know how to prove either inequality in it (see Section~\ref{sec:cip}). The evidence is as follows.
 
-\emph{New values.} Table~\ref{tab:values} gives $n_k$ for $60\le k\le110$, extending the OEIS table. The values for $60\le k\le75$ were posted earlier in the discussion thread by jbell31 (28 July 2026), from a search that assumes rickyc's divisibility result (now formally verified; see the end of Section~\ref{sec:lower}); ours were obtained independently and agree with all $16$. Each value was obtained by an exhaustive search over the candidate set defined by the necessary conditions of Proposition~\ref{prop:5} and Lemma~\ref{lem:6}, with every candidate tested by the exact criterion of Lemmas~\ref{lem:1}--\ref{lem:2}; the same program reproduces the $58$ OEIS values for $k\le59$. Every value was then verified with exact integer arithmetic (exactly one of $n,\dots,n-k+1$ fails to divide $\binom nk$), and minimality was confirmed by a second, independently written exhaustive search, and for several $k$ by a plain scan from $2k$.
+\emph{New values.} Table~\ref{tab:values} gives $n_k$ for $60\le k\le110$, and Table~\ref{tab:values2} for $111\le k\le140$ and the primes $149\le k\le167$, extending the OEIS table. The values for $60\le k\le75$ were posted earlier in the discussion thread by jbell31 (28 July 2026), from a search that assumes rickyc's divisibility result (now formally verified; see the end of Section~\ref{sec:lower}); ours were obtained independently and agree with all $16$. The values for $k\le110$ were obtained by an exhaustive search over the candidate set defined by the necessary conditions of Proposition~\ref{prop:5} and Lemma~\ref{lem:6}, with every candidate tested by the exact criterion of Lemmas~\ref{lem:1}--\ref{lem:2}; the same program reproduces the $58$ OEIS values for $k\le59$, and minimality was confirmed by a second, independently written exhaustive search, and for several $k$ by a plain scan from $2k$. The values for $k\ge111$ come from a faster exhaustive search. For each possible failing index $e$ it scans only $n\equiv e\pmod{D(k,e)}$, where $D(k,e)=\prod_{p^a\|k}p^{\,a+v_p\binom{k-1}{e}+\lfloor\log_p\max(e,k-1-e)\rfloor}$ is rickyc's sharper modulus (this divisibility and $e=n\bmod k$ are formally verified; see the end of Section~\ref{sec:lower}), and it applies Lemma~\ref{lem:6} at every prime in $(\sqrt k,k]$; again every candidate gets the exact test. Before the new runs it reproduced all $109$ values for $2\le k\le110$, and the larger tables used for $k\ge121$ were re-checked on $14$ known values. The second, independently written search confirmed minimality for $111\le k\le119$ and $k=127$; for the other new values it is too slow, and their minimality rests on the single search. Every value was verified with exact integer arithmetic (exactly one of $n,\dots,n-k+1$ fails to divide $\binom nk$).
 
 \emph{Prime versus composite $k$.} The model reproduces the large swings between neighbouring $k$: primes dividing $k$ force $n-i_0$ to be divisible by $p^{a+\lfloor\log_p(k-1)\rfloor}$ (Proposition~\ref{prop:5}), which is why $n_{30}\approx3.8\cdot10^7$ while $n_{31}=8100$.
 
-\emph{Fit.} Let $x_k=\log n_k-\log(1/\delta(k))$. For $\log$ of an $\Exp(1)$ variable the mean is $-\gamma=-0.577$ and the standard deviation $\pi/\sqrt6=1.283$. For $31\le k\le110$ ($80$ values; sample standard deviations throughout) $x_k$ has mean $-0.58$ and standard deviation $1.19$, a Kolmogorov--Smirnov statistic $D=0.083$ against $\log\Exp(1)$ ($5\%$ critical value $0.152$), and $\log n_k$ and $\log(1/\delta(k))$ have correlation $0.988$ with regression slope $0.985$. For $k\le30$ the fit is poor (mean $+0.19$, $D=0.348$); there the constraint $n\ge2k$ and the coarse structure of the admissible set matter.
+\emph{Fit.} Let $x_k=\log n_k-\log(1/\delta(k))$. For $\log$ of an $\Exp(1)$ variable the mean is $-\gamma=-0.577$ and the standard deviation $\pi/\sqrt6=1.283$. For $31\le k\le140$ ($110$ values; sample standard deviations throughout) $x_k$ has mean $-0.59$ and standard deviation $1.20$, a Kolmogorov--Smirnov statistic $D=0.055$ against $\log\Exp(1)$ ($5\%$ critical value $0.129$), and $\log n_k$ and $\log(1/\delta(k))$ have correlation $0.993$ with regression slope $0.994$; for $31\le k\le110$ alone the figures were $-0.58$, $1.19$, $D=0.083$ and $0.988$. Adding the five primes $149\le k\le167$ changes each figure by less than $0.02$. For $k\le30$ the fit is poor (mean $+0.19$, $D=0.348$); there the constraint $n\ge2k$ and the coarse structure of the admissible set matter.
 
-\emph{Out-of-sample tests.} Before computing any $n_k$ with $k\ge60$, the central $90\%$ interval of $\Exp(1)/\delta(k)$, namely $[0.0513/\delta(k),\,2.996/\delta(k)]$, was recorded for every $60\le k\le100$; $38$ of the $41$ values fell inside (outside: $k=64,91,95$). The same was then done for $101\le k\le110$, with $9$ of $10$ inside (outside: $k=105$). Combined: $47$ of $51$, against $45.9$ expected. The model has no fitted parameters, so the order of events could not have influenced the predictions; the timestamped prediction files are in \cite{code}.
+\emph{Out-of-sample tests.} Before computing any $n_k$ with $k\ge60$, the central $90\%$ interval of $\Exp(1)/\delta(k)$, namely $[0.0513/\delta(k),\,2.996/\delta(k)]$, was recorded for every $60\le k\le100$; $38$ of the $41$ values fell inside (outside: $k=64,91,95$). The same was then done for $101\le k\le110$, with $9$ of $10$ inside (outside: $k=105$). Combined: $47$ of $51$, against $45.9$ expected. Two further tests were registered in the same way, each before its values were computed. For $111\le k\le120$ and the primes $113,127,131,137,139$, all $14$ values fell inside ($12.6$ expected). For the remaining $121\le k\le140$ and the primes $149\le k\le199$, the $21$ values computed so far ($k\le140$ and $149\le k\le167$) gave $17$ inside ($18.9$ expected; outside: $k=123,132$ below and $k=140,151$ above). For $k=173$ the search had passed $2.09\cdot10^{22}$ without finding an admissible $n$ when this was written, which is inside that prediction's interval $[1.05\cdot10^{21},\,6.15\cdot10^{22}]$; the larger primes were not run. Over all four tests: $78$ of $86$, against $77.4$ expected. The model has no fitted parameters, so the order of events could not have influenced the predictions; the timestamped prediction files are in \cite{code}.
 
 \emph{Beyond the least element.} For $k\in\{40,45,50,61,64,67\}$ we enumerated the first $139$--$168$ admissible $n$ (Table~\ref{tab:traj}). The $m$-th admissible number is close to $m/\delta(k)$ (median of $m\,\delta(k)\,n^{(m)}$ between $0.90$ and $1.22$), the count below $X$ is within $11\%$ of $\delta(k)X$, the gaps between consecutive failing elements $n-i_0$ have coefficient of variation $0.84$--$1.02$ (exponential: $1$), and the observed frequencies of the failing index $i_0$ match the model's predicted weights $\prod_p\Pr(E_{p,i_0})$. So the model describes the whole admissible set, not only its least element; the least element is the noisy statistic (for $k=64$ it is $20$ times below $1/\delta$, the outlier $x_{64}=-3.0$ above). For $k\le30$ the admissible $n$ cluster (e.g.\ $n_{30}=37584001$ and $37584002$ share the failing element $37584000$), which is consistent with the worse fit at small $k$; for $k\ge40$ clusters are rare. Finally, an admissible $n$ lands in the carry-free window $n\bmod p<k\bmod p$ at all but on average $0.4$--$0.7$ of the primes $p\in(\sqrt k,k]$, $p\nmid k$, the exceptions being almost always primes $p>k/2$ dividing $n-i_0$. This is the structure a construction would have to reproduce (Section~\ref{sec:cip}).
 
@@ -296,12 +296,12 @@ $k$ & $N$ & median $m\delta n^{(m)}$ & count$/\delta X$ & gap CV & non-window pr
 
 \section{Relation to the claimed bounds of Cipollini}\label{sec:cip}
 
-If both claims in \eqref{eq:cip} hold, then Conjecture~\ref{conj} sits strictly between them and says that the upper bound is off by a factor of order $\log\log k$. In the data, for $31\le k\le100$, $\log n_k$ is between $0.47$ and $0.89$ (mean $0.68$) of the main term $\frac k{\log k}(\log\log k+\log\log\log k+\log2)$.
+If both claims in \eqref{eq:cip} hold, then Conjecture~\ref{conj} sits strictly between them and says that the upper bound is off by a factor of order $\log\log k$. In the data, for $31\le k\le140$, $\log n_k$ is between $0.47$ and $0.89$ (mean $0.66$) of the main term $\frac k{\log k}(\log\log k+\log\log\log k+\log2)$.
 
 The local lemmas of \cite{Ci26a} (its Lemma~2, ``stabilization'', and Lemma~3, ``one carry'') are the same facts as our Lemma~\ref{lem:3} and Lemma~\ref{lem:6}; Lemma~3 of \cite{Ci26b}, that $k\mid n-i_0$ for admissible $n$, is a special case of Proposition~\ref{prop:5}. The construction in \cite{Ci26a} takes $n=e+Mt$ with a small exceptional index $e\approx k/(2\log k\log\log k)$, forces the primes dividing $k\binom{k-1}e$ by divisibility, and uses a pigeonhole (simultaneous approximation) to put $n\bmod p$ into the carry-free window $[0,k\bmod p)$ for the remaining large primes. Pigeonhole on differences yields symmetric windows, of half-width $\min(e,(k\bmod p)-e)\le e$, at a cost of $\log(p/e)$ per prime; summed over primes this is $\frac k{\log k}(\log(k/e)-1+o(1))$. The density model's natural window is the full $[0,k\bmod p)$, at cost $\log\frac{p}{k\bmod p}$ per prime, and these costs sum to $S(k)\sim Ck/\log k$. The enumeration in Section~\ref{sec:evidence} shows that actual admissible $n$ do sit in the one-sided window at essentially every large prime. The gap between the two costs is exactly the gap between what a symmetric pigeonhole can reach and what a one-sided target would require; closing it appears to need an equidistribution-type input for the vectors $(n\bmod p)_{p}$ over $n\le e^{(C+\varepsilon)k/\log k}$, a range far smaller than the product of the moduli, and we do not know how to obtain one. The lower-bound half of the conjecture, that no admissible $n$ lies below $e^{(C-\varepsilon)k/\log k}$, is a least-element problem of Linnik type and seems out of reach.
 
 \appendix
-\section{The values \texorpdfstring{$n_k$}{n\_k} for \texorpdfstring{$60\le k\le110$}{60 <= k <= 110}}
+\section{The values \texorpdfstring{$n_k$}{n\_k} for \texorpdfstring{$60\le k\le140$}{60 <= k <= 140} and prime \texorpdfstring{$k\le167$}{k <= 167}}
 
 \begin{table}[h]
 \caption{$n_k$ and the bad index $i_0$ (so $n_k-i_0$ is the element of the block that fails to divide $\binom{n_k}{k}$).}\label{tab:values}
@@ -327,6 +327,35 @@ $k$ & $n_k$ & $i_0$ & $k$ & $n_k$ & $i_0$ & $k$ & $n_k$ & $i_0$\\
 102 & 455\,022\,751\,908\,409\,400 & 56 & 103 & 80\,855\,126\,198\,850 & 57 & 104 & 28\,292\,410\,857\,118\,753 & 33 \\
 105 & 114\,184\,320\,231\,814\,976 & 101 & 106 & 505\,139\,783\,269\,972\,305 & 81 & 107 & 314\,604\,394\,073\,026 & 96 \\
 108 & 42\,039\,517\,780\,512\,072 & 72 & 109 & 92\,095\,914\,818\,376 & 95 & 110 & 4\,499\,581\,121\,078\,560\,101 & 101 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{$n_k$ and the bad index $i_0$ for $111\le k\le140$ and the primes $149\le k\le167$ (computed 23 October 2026).}\label{tab:values2}
+\footnotesize
+\begin{tabular}{rrr@{\qquad}rrr}
+\toprule
+$k$ & $n_k$ & $i_0$ & $k$ & $n_k$ & $i_0$\\
+\midrule
+111 & 624\,203\,258\,168\,949\,800 & 5 & 112 & 235\,084\,258\,952\,159\,310 & 78 \\
+113 & 1\,154\,291\,595\,269\,232 & 25 & 114 & 3\,058\,893\,621\,505\,762\,601 & 41 \\
+115 & 2\,571\,800\,553\,180\,159\,954 & 79 & 116 & 4\,581\,489\,291\,604\,040\,805 & 101 \\
+117 & 2\,625\,464\,741\,944\,934\,180 & 83 & 118 & 12\,488\,331\,360\,383\,631\,792 & 48 \\
+119 & 1\,075\,680\,624\,503\,443\,492 & 65 & 120 & 349\,159\,236\,017\,505\,408\,068 & 68 \\
+121 & 36\,031\,544\,587\,629\,360 & 99 & 122 & 10\,690\,191\,371\,065\,479\,196 & 28 \\
+123 & 539\,955\,158\,318\,483\,546 & 56 & 124 & 2\,319\,409\,815\,118\,477\,347 & 35 \\
+125 & 165\,058\,245\,202\,193\,772 & 22 & 126 & 1\,612\,403\,449\,350\,274\,216\,000 & 64 \\
+127 & 9\,800\,282\,003\,526\,126 & 48 & 128 & 2\,100\,509\,814\,172\,237\,875 & 51 \\
+129 & 366\,918\,069\,874\,600\,035\,072 & 72 & 130 & 2\,672\,890\,339\,561\,621\,920\,000 & 0 \\
+131 & 1\,225\,479\,431\,226\,053\,250 & 60 & 132 & 123\,904\,568\,785\,495\,246\,880 & 32 \\
+133 & 883\,499\,074\,332\,177\,600\,000 & 53 & 134 & 4\,624\,346\,743\,350\,798\,696\,001 & 65 \\
+135 & 894\,259\,177\,676\,725\,050\,114 & 114 & 136 & 266\,331\,343\,761\,076\,882\,500 & 68 \\
+137 & 3\,995\,236\,738\,822\,581\,000 & 60 & 138 & 48\,518\,376\,432\,039\,910\,149\,250 & 130 \\
+139 & 7\,179\,634\,687\,138\,597\,002 & 111 & 140 & 293\,365\,786\,466\,311\,148\,800\,071 & 71 \\
+149 & 59\,804\,718\,543\,532\,815\,636 & 14 & 151 & 316\,542\,517\,930\,011\,220\,500 & 139 \\
+157 & 48\,048\,676\,933\,717\,376\,280 & 75 & 163 & 377\,518\,312\,793\,973\,563\,136 & 68 \\
+167 & 729\,078\,224\,618\,436\,330\,880 & 8 & & & \\
 \bottomrule
 \end{tabular}
 \end{table}

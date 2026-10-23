@@ -1,0 +1,16 @@
+ 111  n=624203258168949800       pred median=8.352e+17  90%=[6.18e+16,3.61e+18]  inside   ln(n*delta)=-0.66  PIT=0.404
+ 112  n=235084258952159310       pred median=1.501e+18  90%=[1.11e+17,6.49e+18]  inside   ln(n*delta)=-2.22  PIT=0.103
+ 113  n=1154291595269232         pred median=1.016e+15  90%=[7.51e+13,4.39e+15]  inside   ln(n*delta)=-0.24  PIT=0.545
+ 114  n=3058893621505762601      pred median=1.667e+19  90%=[1.23e+18,7.20e+19]  inside   ln(n*delta)=-2.06  PIT=0.119
+ 115  n=2571800553180159954      pred median=1.084e+18  90%=[8.02e+16,4.69e+18]  inside   ln(n*delta)=+0.50  PIT=0.807
+ 116  n=4581489291604040805      pred median=3.126e+18  90%=[2.31e+17,1.35e+19]  inside   ln(n*delta)=+0.02  PIT=0.638
+ 117  n=2625464741944934180      pred median=1.408e+18  90%=[1.04e+17,6.09e+18]  inside   ln(n*delta)=+0.26  PIT=0.725
+ 118  n=12488331360383631792     pred median=7.341e+18  90%=[5.43e+17,3.17e+19]  inside   ln(n*delta)=+0.16  PIT=0.692
+ 119  n=1075680624503443492      pred median=2.754e+18  90%=[2.04e+17,1.19e+19]  inside   ln(n*delta)=-1.31  PIT=0.237
+ 120  n=349159236017505408068    pred median=1.823e+20  90%=[1.35e+19,7.88e+20]  inside   ln(n*delta)=+0.28  PIT=0.735
+ 127  n=9800282003526126         pred median=4.291e+16  90%=[3.18e+15,1.85e+17]  inside   ln(n*delta)=-1.84  PIT=0.146
+ 131  n=1225479431226053250      pred median=6.402e+17  90%=[4.74e+16,2.77e+18]  inside   ln(n*delta)=+0.28  PIT=0.735
+ 137  n=3995236738822581000      pred median=1.852e+18  90%=[1.37e+17,8.01e+18]  inside   ln(n*delta)=+0.40  PIT=0.776
+ 139  n=7179634687138597002      pred median=3.387e+18  90%=[2.51e+17,1.46e+19]  inside   ln(n*delta)=+0.38  PIT=0.770
+
+14 values scored: 14/14 inside the 90% intervals (expected 12.6); mean ln(n*delta) = -0.432 (Exp(1) model: -0.577); KS D=0.209, p~0.52
